@@ -339,7 +339,7 @@ export function mountViewer(container, { config = {}, autoSway = true, interacti
     });
     el.addEventListener('pointermove', (e) => {
       if (!dragging) return;
-      userYaw = THREE.MathUtils.clamp(userYaw + (e.clientX - lastX) * 0.006, -0.95, 0.95);
+      userYaw += (e.clientX - lastX) * 0.006; // rotation libre, tour complet possible
       lastX = e.clientX;
       lastTouch = performance.now();
     });
