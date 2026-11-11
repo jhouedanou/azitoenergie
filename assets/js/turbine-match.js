@@ -1,5 +1,5 @@
 // Turbine Match — observer une turbine, trouver le seul schéma identique parmi A / B / C.
-// 4 turbines (recréations three.js des visuels du dossier images/turbine) × 3 niveaux de difficulté.
+// Le visiteur choisit l'une des 4 turbines (recréations three.js des visuels du dossier images/turbine) ; 3 niveaux de difficulté.
 import { mountViewer, renderSchemas, webglAvailable, VARIANTS } from './turbine-model.js';
 
 const DURATION = 30;
@@ -40,12 +40,13 @@ const POOLS = {
     [M.turbine4, M.compGap, M.portMoved, M.noFlange],
   ],
 };
-const ORDER = ['ecorche', 'maquette', 'rotor', 'coupe'];
+const ORDER = ['rotor', 'ecorche', 'maquette', 'coupe']; // ordre des vignettes
 
 const $ = (id) => document.getElementById(id);
 const els = {
+  picker: $('picker'), grid: $('grid'), match: $('match'),
   stage: $('stage'), options: [...document.querySelectorAll('.option')],
-  intro: $('intro'), result: $('result'), start: $('start'), again: $('again'), see: $('see'),
+  intro: $('intro'), result: $('result'), start: $('start'), again: $('again'), see: $('see'), other: $('other'),
   levels: [...document.querySelectorAll('#levels .chip')], levelLabel: $('level-label'), hint: $('hint'),
   timer: $('timer'), timerText: $('timer-text'), timerBar: $('timer-bar'),
   rTitle: $('result-title'), rText: $('result-text'), rEyebrow: $('result-eyebrow'),
@@ -55,13 +56,13 @@ const RING = 2 * Math.PI * 22;
 els.timerBar.style.strokeDasharray = RING;
 
 // Niveau par défaut : ?serie=1|2|3, sinon alternance automatique selon le jour.
-// ?turbine=rotor|ecorche|maquette|coupe force une turbine ; sinon elles tournent à chaque manche.
+// ?turbine=rotor|ecorche|maquette|coupe force une turbine et saute l'écran de choix.
 const params = new URLSearchParams(location.search);
 const serie = parseInt(params.get('serie'), 10);
 const day = Math.floor(Date.now() / 86_400_000);
 let level = serie >= 1 && serie <= 3 ? serie - 1 : day % LEVELS.length;
 const forced = VARIANTS[params.get('turbine')] ? params.get('turbine') : null;
-let turn = day % ORDER.length;
+let current = forced || ORDER[0]; // turbine choisie
 
 let viewer = null;
 let round = null;      // { variant, answer, options: [{cfg, mutation|null}] }
@@ -83,7 +84,7 @@ function setLevel(i) {
 }
 
 function newRound() {
-  const variant = forced || ORDER[turn++ % ORDER.length];
+  const variant = current;
   const pool = POOLS[variant === 'rotor' ? 'rotor' : 'cased'][level];
   const base = { variant };
   const wrong = shuffle(pool).slice(0, 2);
@@ -118,9 +119,40 @@ function loop() {
   raf = requestAnimationFrame(loop);
 }
 
+// Vignettes des 4 turbines (rendu schéma), une seule fois.
+function buildPicker() {
+  const urls = renderSchemas(ORDER.map((variant) => ({ variant })), 800, 450);
+  ORDER.forEach((variant, i) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'pick pick--schema';
+    const img = document.createElement('img');
+    img.src = urls[i];
+    img.alt = '';
+    const span = document.createElement('span');
+    span.textContent = VARIANTS[variant].label;
+    btn.append(img, span);
+    btn.addEventListener('click', () => { current = variant; start(); });
+    els.grid.append(btn);
+  });
+}
+
+function toPicker() {
+  playing = false;
+  cancelAnimationFrame(raf);
+  els.intro.hidden = true;
+  els.result.hidden = true;
+  setTimer(DURATION);
+  if (forced) return start();
+  els.match.hidden = true;
+  els.picker.hidden = false;
+}
+
 function start() {
   els.intro.hidden = true;
   els.result.hidden = true;
+  els.picker.hidden = true;
+  els.match.hidden = false;
   newRound();
   playing = true;
   deadline = performance.now() + DURATION * 1000;
@@ -169,7 +201,8 @@ function seeDifference() {
 function init() {
   setLevel(level);
   if (!webglAvailable()) {
-    document.getElementById('match').innerHTML =
+    els.match.hidden = false;
+    els.match.innerHTML =
       '<div class="notice"><h2>La 3D n’est pas disponible sur cet écran.</h2>' +
       '<p>Turbine Match a besoin de WebGL. Le puzzle Build Azito fonctionne partout.</p>' +
       '<a class="btn" href="build-azito.html"><span>Jouer à Build Azito</span></a></div>';
@@ -178,13 +211,12 @@ function init() {
   }
   viewer = mountViewer(els.stage);
   setTimer(DURATION);
-  // Une manche d'aperçu derrière l'intro ; la vraie est tirée au départ, avec la même turbine.
-  newRound();
-  turn--;
+  buildPicker();
   els.options.forEach((b) => { b.disabled = true; });
 
   els.levels.forEach((b) => b.addEventListener('click', () => setLevel(Number(b.dataset.level))));
-  els.start.addEventListener('click', start);
+  els.start.addEventListener('click', toPicker);
+  els.other.addEventListener('click', toPicker);
   els.again.addEventListener('click', start);
   els.see.addEventListener('click', seeDifference);
   els.options.forEach((btn) => btn.addEventListener('click', () => finish(Number(btn.dataset.i))));

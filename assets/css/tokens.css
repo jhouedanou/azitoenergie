@@ -34,6 +34,7 @@
 
   --gutter: clamp(16px, 3vw, 56px);
   --tap: 64px;             /* cible tactile minimale (borne) */
+  --photo-veil: linear-gradient(rgb(49 50 128 / 0.86), rgb(49 50 128 / 0.86)); /* voile indigo sur la photo aérienne */
   --slash: 18deg;          /* inclinaison de l'éclair du logo */
 
   /* Logo : largeur mini 35 mm ≈ 132 px ; zone d'exclusion = hauteur du « E » ≈ 16 % de la largeur */

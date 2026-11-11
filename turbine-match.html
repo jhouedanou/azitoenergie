@@ -29,7 +29,15 @@
     </div>
   </header>
 
-  <main class="match" id="match">
+  <!-- Choix de la turbine -->
+  <main class="picker" id="picker" hidden>
+    <p class="eyebrow">Défi 1 · 30 secondes</p>
+    <h1>Choisis la turbine à observer</h1>
+    <div class="picker__grid picker__grid--4" id="grid"></div>
+    <p class="picker__note">Le chrono démarre dès que la turbine s’affiche. Trois schémas te seront proposés : un seul est exact.</p>
+  </main>
+
+  <main class="match" id="match" hidden>
     <div class="match__stage" id="stage">
       <p class="match__hint" id="hint">La turbine · fais-la pivoter du doigt</p>
     </div>
@@ -48,7 +56,7 @@
       <h2>Turbine Match<br><em>Trouve le bon schéma</em></h2>
       <div class="rule"></div>
       <ol class="steps">
-        <li>Observe la turbine. Tu peux la faire pivoter. Elle change à chaque manche.</li>
+        <li>Choisis l’une des quatre turbines, puis observe-la. Tu peux la faire pivoter.</li>
         <li>Compare-la aux schémas A, B et C.</li>
         <li>Touche le seul schéma identique avant la fin du chrono.</li>
       </ol>
@@ -75,6 +83,7 @@
       <div class="panel__actions">
         <button class="btn" type="button" id="see"><span>Voir la différence</span></button>
         <button class="btn btn--onDark" type="button" id="again"><span>Rejouer</span></button>
+        <button class="btn btn--ghostOnDark" type="button" id="other"><span>Autre turbine</span></button>
         <a class="btn btn--ghostOnDark" href="index.html"><span>Accueil</span></a>
       </div>
     </div>

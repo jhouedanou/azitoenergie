@@ -165,8 +165,15 @@ export function buildTurbine(config = {}, style = 'real') {
     lined(1.07, 0.8, X.stubEnd, X.compEnd);
     lined(1.38, 1.38, X.compEnd, X.combEnd);
     lined(0.9, 1.27, X.combEnd, X.turbEnd);
-    cylX(casing, 1.27, 1.5, X.turbEnd, 3.45, mat('gray5', { double: true }), cut);
-    cylX(casing, 1.56, 1.56, 3.45, 3.62, mat('gray8', { double: true }), cut);
+    if (variant === 'coupe') {
+      // Coupe longitudinale : diffuseur évasé et grande couronne d'échappement entière, comme sur le visuel source
+      cylX(casing, 1.27, 1.82, X.turbEnd, 3.45, mat('gray5', { double: true }), cut);
+      cylX(casing, 1.95, 1.95, 3.45, 3.8, mat('gray8', { double: true }), { open: true });
+      cylX(casing, 1.7, 1.7, 3.45, 3.8, mat('gray5', { double: true }), { open: true, edge: false });
+    } else {
+      cylX(casing, 1.27, 1.5, X.turbEnd, 3.45, mat('gray5', { double: true }), cut);
+      cylX(casing, 1.56, 1.56, 3.45, 3.62, mat('gray8', { double: true }), cut);
+    }
 
     const inlet = part('inlet');
     if (cfg.bell) {
@@ -230,6 +237,8 @@ export function buildTurbine(config = {}, style = 'real') {
   }
 
   if (schema) addEdges(root);
+  // Maquette : sens inversé, turbine à gauche et compresseur à droite, comme sur la photo du modèle réduit.
+  if (variant === 'maquette') root.scale.x = -1;
   return root;
 }
 
