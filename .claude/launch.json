@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "azito",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8010", "--directory", "/Users/bfa/Developer/GitHub/azitoenergie"],
+      "port": 8010
+    }
+  ]
+}
