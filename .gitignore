@@ -1,2 +1,5 @@
 .DS_Store
 .vercel
+desktop/node_modules/
+desktop/web/
+desktop/dist/

@@ -1,0 +1,32 @@
+LES DÉFIS DU STAND AZITO ENERGIE
+Version Windows pour la borne tactile (fonctionne sans Internet)
+
+POSTE REQUIS
+  Windows 10 ou 11, 64 bits. Écran tactile paysage, idéalement 1920 x 1080.
+  Aucune installation, aucune connexion Internet.
+
+MISE EN ROUTE
+  1. Copier « Azito-Defis-1.1.0.exe » sur le poste, par exemple sur le Bureau.
+  2. Double-cliquer dessus. Le premier lancement prend quelques secondes.
+  3. Si Windows affiche « Windows a protégé votre ordinateur » :
+     cliquer sur « Informations complémentaires », puis « Exécuter quand même ».
+     Ce message apparaît parce que le programme n'est pas signé ; il ne revient pas ensuite.
+  4. Les jeux s'ouvrent en plein écran et occupent toute la borne.
+
+PENDANT LE SALON
+  Quitter l'application : Ctrl + Maj + Q (clavier branché sur la borne).
+    Les autres raccourcis (Alt+F4, F11, etc.) sont désactivés pour que les visiteurs
+    ne puissent pas sortir du jeu.
+  Remettre le classement à zéro : appui long de 3 secondes sur le logo Azito Energie.
+  Sans activité pendant une minute, le jeu en cours revient tout seul à l'accueil.
+  L'écran ne se met pas en veille tant que l'application est ouverte.
+
+CLASSEMENT
+  Les meilleurs temps de « Build Azito » sont enregistrés sur la borne et conservés
+  d'un lancement à l'autre. Le classement affiché est celui du jour.
+  Cette version n'échange rien avec la version en ligne : chaque borne a son propre classement.
+
+LANCEMENT AUTOMATIQUE AU DÉMARRAGE (facultatif)
+  1. Clic droit sur le fichier .exe > « Créer un raccourci ».
+  2. Touches Windows + R, saisir  shell:startup  puis Entrée.
+  3. Déplacer le raccourci dans le dossier qui s'ouvre.
