@@ -4,18 +4,27 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Build Azito — Azito Energie</title>
-  <meta name="theme-color" content="#313280">
+  <meta name="theme-color" content="#1b1c55">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600&family=Barlow+Condensed:wght@500;700&display=swap">
   <link rel="stylesheet" href="assets/css/tokens.css">
   <link rel="stylesheet" href="assets/css/app.css">
 </head>
 <body class="gamepage" data-page="build">
   <header class="topbar">
     <a class="logo" href="index.html" aria-label="Azito Energie — accueil">
-      <img src="assets/logo/azito-energie.png" alt="Azito Energie" width="1773" height="407">
+      <img src="assets/logo/azito-energie-blanc.png" alt="Azito Energie" width="1342" height="305">
     </a>
-    <p class="topbar__title">Build Azito <span>· Construis ta mini centrale</span></p>
+    <p class="topbar__title">Build Azito</p>
     <div class="topbar__actions">
-      <div class="timer" id="timer"><span id="timer-text">0,0 s</span></div>
+      <div class="timer" id="timer" role="timer" aria-label="Secondes restantes">
+        <svg class="timer__ring" viewBox="0 0 52 52" aria-hidden="true">
+          <circle class="track" cx="26" cy="26" r="22"/>
+          <circle class="bar" id="timer-bar" cx="26" cy="26" r="22"/>
+        </svg>
+        <span id="timer-text">60</span><small>s</small>
+      </div>
       <button class="iconbtn" type="button" data-fullscreen aria-label="Plein écran">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
       </button>
@@ -24,15 +33,9 @@
 
   <!-- Choix du puzzle -->
   <main class="picker" id="picker">
-    <p class="eyebrow" style="color: var(--azito-red)">Défi 2 · 60 secondes max</p>
-    <h1>Choisis l’image à reconstituer</h1>
-    <div class="chips" id="sizes">
-      <span>Pièces</span>
-      <button class="chip" type="button" data-cols="4" aria-pressed="true">8 · Classé</button>
-      <button class="chip" type="button" data-cols="3" aria-pressed="false">6 · Entraînement</button>
-    </div>
-    <div class="picker__grid" id="grid"></div>
-    <p style="color: var(--text-muted); font-size: var(--fs-sm)">Le chrono démarre dès que le puzzle s’affiche. Glisse chaque pièce à sa place : elle s’aimante quand elle est bien posée.</p>
+    <h1>Choisis l’image <em>à reconstituer</em></h1>
+    <p class="picker__note">8 pièces, 60 secondes. Glisse chaque pièce à sa place : elle s’aimante quand elle est bien posée. Le chrono part dès que tu touches une image.</p>
+    <div class="picker__grid picker__grid--5" id="grid"></div>
   </main>
 
   <!-- Jeu -->
@@ -40,7 +43,7 @@
     <div class="build__bar">
       <button class="btn btn--sm btn--ghostOnDark" type="button" id="back"><span>Changer d’image</span></button>
       <div class="build__progress" aria-hidden="true"><i id="progress"></i></div>
-      <span id="count">0 / 8 pièces</span>
+      <p class="build__count" id="count" aria-live="polite">0 / 8 <small>pièces</small></p>
     </div>
     <div class="build__canvas" id="canvas-wrap"><canvas id="canvas"></canvas></div>
   </main>
@@ -48,10 +51,8 @@
   <!-- Résultat -->
   <div class="overlay" id="result" hidden>
     <div class="panel">
-      <p class="eyebrow" id="result-eyebrow"></p>
       <h2 id="result-title"></h2>
       <p class="bigtime" id="result-time"></p>
-      <div class="rule"></div>
       <p id="result-text"></p>
       <form class="nameform" id="nameform" autocomplete="off">
         <input id="name" name="name" type="text" maxlength="14" placeholder="Ton prénom ou pseudo" aria-label="Ton prénom ou pseudo" enterkeyhint="done">

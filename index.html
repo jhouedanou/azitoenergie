@@ -5,15 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Azito Energie — Les défis du stand</title>
   <meta name="description" content="Deux défis à relever sur le stand Azito Energie : Turbine Match et Build Azito.">
-  <meta name="theme-color" content="#313280">
+  <meta name="theme-color" content="#1b1c55">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600&family=Barlow+Condensed:wght@500;700&display=swap">
   <link rel="stylesheet" href="assets/css/tokens.css">
   <link rel="stylesheet" href="assets/css/app.css">
   <script type="importmap">{ "imports": { "three": "./assets/vendor/three.module.min.js" } }</script>
 </head>
-<body data-page="home">
+<body class="home" data-page="home">
   <header class="topbar">
     <a class="logo" href="index.html" aria-label="Azito Energie — accueil">
-      <img src="assets/logo/azito-energie.png" alt="Azito Energie" width="1773" height="407">
+      <img src="assets/logo/azito-energie-blanc.png" alt="Azito Energie" width="1342" height="305">
     </a>
     <div class="topbar__actions">
       <button class="iconbtn" type="button" data-fullscreen aria-label="Plein écran">
@@ -22,66 +25,38 @@
     </div>
   </header>
 
-  <main>
-    <section class="hero">
-      <div class="hero__text">
-        <p class="eyebrow">Stand Azito Energie</p>
-        <h1>Deux défis.<br><em>Moins d’une minute chacun.</em></h1>
-        <p class="hero__lead">Observe la turbine, reconstitue la centrale, et repars avec un goodie.</p>
-        <div class="hero__cta">
-          <a class="btn" href="turbine-match.html"><span>Turbine Match</span></a>
-          <a class="btn btn--ghostOnDark" href="build-azito.html"><span>Build Azito</span></a>
-        </div>
-      </div>
-      <div class="hero__slash" aria-hidden="true"></div>
-      <div class="hero__stage" id="hero-stage" role="img" aria-label="Turbine à gaz en vue écorchée"></div>
-    </section>
+  <main class="lobby">
+    <div class="lobby__head">
+      <h1>Deux défis. <em>Moins d’une minute chacun.</em></h1>
+      <p>Réussis un défi, montre ton écran à l’animateur et repars avec un goodie.</p>
+    </div>
 
-    <section class="section">
-      <div class="section__head">
-        <h2>Choisis ton défi</h2>
-        <p>Animations permanentes · un goodie pour chaque réussite</p>
+    <a class="entry entry--match" href="turbine-match.html">
+      <div class="entry__media" id="hero-stage"></div>
+      <div class="entry__body">
+        <h2>Turbine Match</h2>
+        <p>Mémorise une turbine, puis retrouve son schéma parmi A, B et C. 30 secondes.</p>
+        <span class="btn"><span>Jouer</span></span>
       </div>
-      <div class="games">
-        <a class="game" href="turbine-match.html">
-          <div class="game__media">
-            <img id="thumb-match" alt="" width="960" height="540">
-            <span class="game__tag">30 secondes</span>
-          </div>
-          <div class="game__body">
-            <h3>Turbine Match <small>Trouve le bon schéma</small></h3>
-            <p>Quatre turbines à observer : rotor nu, écorché, maquette, coupe. Désigne parmi A, B et C le seul schéma identique ; les deux autres cachent une différence.</p>
-            <span class="btn btn--primary"><span>Jouer</span></span>
-          </div>
-        </a>
-        <a class="game" href="build-azito.html">
-          <div class="game__media">
-            <img src="assets/img/site-lagune.jpg" alt="" width="1600" height="1045" loading="lazy">
-            <span class="game__tag">60 secondes max</span>
-          </div>
-          <div class="game__body">
-            <h3>Build Azito <small>Construis ta mini centrale</small></h3>
-            <p>Reconstitue une image de la centrale en 8 pièces, le plus vite possible. Les meilleurs temps du jour sont affichés.</p>
-            <span class="btn btn--primary"><span>Jouer</span></span>
-          </div>
-        </a>
-      </div>
-    </section>
+    </a>
 
-    <section class="section band">
-      <div>
-        <h2>Meilleurs temps du jour</h2>
-        <p>Classement Build Azito, puzzle 8 pièces. Il repart de zéro chaque matin.</p>
-        <p>Bonne réponse ou puzzle terminé : présente ton écran à l’animateur pour recevoir ton goodie.</p>
+    <a class="entry entry--build" href="build-azito.html">
+      <div class="entry__media">
+        <img src="assets/img/centrale-aerienne.jpg" alt="" width="1600" height="1066">
       </div>
+      <div class="entry__body">
+        <h2>Build Azito</h2>
+        <p>Reconstitue la centrale en 8 pièces. 60 secondes, cinq images au choix.</p>
+        <span class="btn"><span>Jouer</span></span>
+      </div>
+    </a>
+
+    <aside class="lobby__board">
+      <h2>Meilleurs temps <em>du jour</em></h2>
       <div id="board"></div>
-    </section>
+      <p>Classement Build Azito. Il repart de zéro chaque matin.</p>
+    </aside>
   </main>
-
-  <footer class="footer">
-    <span>Azito Energie</span>
-    <span>Centrale thermique d’Azito · Abidjan, Côte d’Ivoire</span>
-  </footer>
 
   <script type="module">
     import './assets/js/kiosk.js';
@@ -89,16 +64,14 @@
     renderBoard(document.getElementById('board'), { limit: 5 });
 
     const stage = document.getElementById('hero-stage');
-    const thumb = document.getElementById('thumb-match');
     try {
-      const { mountViewer, renderSchemas, webglAvailable } = await import('./assets/js/turbine-model.js');
+      const { mountViewer, webglAvailable } = await import('./assets/js/turbine-model.js');
       if (!webglAvailable()) throw new Error('webgl');
-      thumb.src = renderSchemas([{ variant: 'maquette' }])[0];
-      mountViewer(stage, { config: { variant: 'ecorche' } });
+      // Vue non interactive : toute la carte est un lien vers le jeu.
+      mountViewer(stage, { config: { variant: 'ecorche' }, interactive: false });
     } catch {
       // Sans WebGL : photo de la centrale à la place de la turbine 3D
-      stage.style.background = 'url(assets/img/cheminees-sol.jpg) center / cover';
-      thumb.src = 'assets/img/unite.jpg';
+      stage.style.background = 'url(assets/img/cheminee.jpg) center / cover';
     }
   </script>
 </body>

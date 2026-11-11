@@ -1,3 +1,5 @@
 images/
 .claude/
 .DS_Store
+supabase/
+DESIGN.md

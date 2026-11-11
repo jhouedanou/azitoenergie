@@ -4,7 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Turbine Match — Azito Energie</title>
-  <meta name="theme-color" content="#313280">
+  <meta name="theme-color" content="#1b1c55">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600&family=Barlow+Condensed:wght@500;700&display=swap">
   <link rel="stylesheet" href="assets/css/tokens.css">
   <link rel="stylesheet" href="assets/css/app.css">
   <script type="importmap">{ "imports": { "three": "./assets/vendor/three.module.min.js" } }</script>
@@ -12,16 +15,16 @@
 <body class="gamepage" data-page="match">
   <header class="topbar">
     <a class="logo" href="index.html" aria-label="Azito Energie — accueil">
-      <img src="assets/logo/azito-energie.png" alt="Azito Energie" width="1773" height="407">
+      <img src="assets/logo/azito-energie-blanc.png" alt="Azito Energie" width="1342" height="305">
     </a>
-    <p class="topbar__title">Turbine Match <span>· <b id="level-label">Niveau 1</b></span></p>
+    <p class="topbar__title">Turbine Match <span id="level-label">Niveau 1</span></p>
     <div class="topbar__actions">
-      <div class="timer" id="timer" aria-live="off">
+      <div class="timer" id="timer" role="timer" aria-label="Secondes restantes">
         <svg class="timer__ring" viewBox="0 0 52 52" aria-hidden="true">
           <circle class="track" cx="26" cy="26" r="22"/>
           <circle class="bar" id="timer-bar" cx="26" cy="26" r="22"/>
         </svg>
-        <span id="timer-text">30</span>
+        <span id="timer-text">30</span><small>s</small>
       </div>
       <button class="iconbtn" type="button" data-fullscreen aria-label="Plein écran">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
@@ -29,56 +32,43 @@
     </div>
   </header>
 
-  <main class="match" id="match">
-    <div class="match__stage" id="stage">
-      <p class="match__hint" id="hint">La turbine · fais-la pivoter du doigt</p>
-    </div>
-    <p class="match__prompt">Quel schéma correspond à la turbine ? <span>Un seul est exact. Touche A, B ou C.</span></p>
-    <div class="match__options" id="options">
-      <button class="option" type="button" data-i="0" aria-label="Schéma A"><img alt=""><span class="option__letter">A</span></button>
-      <button class="option" type="button" data-i="1" aria-label="Schéma B"><img alt=""><span class="option__letter">B</span></button>
-      <button class="option" type="button" data-i="2" aria-label="Schéma C"><img alt=""><span class="option__letter">C</span></button>
-    </div>
+  <!-- Choix de la turbine : c'est aussi l'écran d'explication -->
+  <main class="picker" id="picker">
+    <h1>Choisis ta turbine</h1>
+    <p class="picker__note">Tu as 10 secondes pour la mémoriser. Elle disparaît, puis tu touches le seul schéma identique parmi A, B et C. 30 secondes en tout : le chrono part dès que tu touches une turbine.</p>
+    <div class="picker__grid picker__grid--4" id="grid"></div>
   </main>
 
-  <!-- Intro -->
-  <div class="overlay" id="intro">
-    <div class="panel">
-      <p class="eyebrow">Défi 1 · 30 secondes</p>
-      <h2>Turbine Match<br><em>Trouve le bon schéma</em></h2>
-      <div class="rule"></div>
-      <ol class="steps">
-        <li>Observe la turbine. Tu peux la faire pivoter. Elle change à chaque manche.</li>
-        <li>Compare-la aux schémas A, B et C.</li>
-        <li>Touche le seul schéma identique avant la fin du chrono.</li>
-      </ol>
-      <div class="chips" id="levels">
-        <span>Niveau</span>
-        <button class="chip" type="button" data-level="0">1 · Facile</button>
-        <button class="chip" type="button" data-level="1">2 · Moyen</button>
-        <button class="chip" type="button" data-level="2">3 · Expert</button>
-      </div>
-      <div class="panel__actions">
-        <button class="btn" type="button" id="start"><span>Commencer</span></button>
-        <a class="btn btn--ghostOnDark" href="index.html"><span>Accueil</span></a>
-      </div>
-    </div>
-  </div>
+  <main class="match" id="match" hidden>
+    <div class="match__stage" id="stage"></div>
 
-  <!-- Résultat -->
-  <div class="overlay" id="result" hidden>
-    <div class="panel">
-      <p class="eyebrow" id="result-eyebrow"></p>
-      <h2 id="result-title"></h2>
-      <div class="rule"></div>
-      <p id="result-text"></p>
-      <div class="panel__actions">
-        <button class="btn" type="button" id="see"><span>Voir la différence</span></button>
-        <button class="btn btn--onDark" type="button" id="again"><span>Rejouer</span></button>
-        <a class="btn btn--ghostOnDark" href="index.html"><span>Accueil</span></a>
+    <!-- Consigne pendant la manche -->
+    <div class="match__bar" id="prompt">
+      <b id="prompt-title">Mémorise la turbine</b>
+      <p class="match__tip" id="prompt-tip"></p>
+      <button class="btn btn--sm btn--onDark" type="button" id="ready"><span>Je suis prêt</span></button>
+    </div>
+
+    <!-- Verdict : il prend la place de la consigne et laisse les schémas visibles -->
+    <div class="match__bar" id="verdict" role="status" hidden>
+      <div class="verdict__text">
+        <b id="verdict-title"></b>
+        <p id="verdict-text"></p>
+      </div>
+      <div class="verdict__actions">
+        <button class="btn btn--sm" type="button" id="again"><span>Rejouer</span></button>
+        <button class="btn btn--sm btn--onDark" type="button" id="see"><span>Voir la différence</span></button>
+        <button class="btn btn--sm btn--ghostOnDark" type="button" id="other"><span>Autre turbine</span></button>
+        <a class="btn btn--sm btn--ghostOnDark" href="index.html"><span>Accueil</span></a>
       </div>
     </div>
-  </div>
+
+    <div class="match__options" id="options">
+      <button class="option" type="button" data-i="0" aria-label="Schéma A"><span class="option__letter">A</span><span class="option__mark" hidden></span></button>
+      <button class="option" type="button" data-i="1" aria-label="Schéma B"><span class="option__letter">B</span><span class="option__mark" hidden></span></button>
+      <button class="option" type="button" data-i="2" aria-label="Schéma C"><span class="option__letter">C</span><span class="option__mark" hidden></span></button>
+    </div>
+  </main>
 
   <script type="module" src="assets/js/kiosk.js"></script>
   <script type="module" src="assets/js/turbine-match.js"></script>
