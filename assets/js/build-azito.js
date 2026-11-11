@@ -1,9 +1,11 @@
 // Build Azito — puzzle chronométré (Canvas 2D), pièces à tenons « aimantées ».
 import { addScore, renderBoard, formatTime } from './scores.js';
+import { makeTimer } from './timer.js';
 
 const MAX_TIME = 30;
 const ROWS = 2;
-const C = { indigo: '#313280', red: '#c20e1a', blue: '#4d85d0', gray2: '#d9d9d9', gray5: '#b1b1b0', white: '#ffffff' };
+const SNAP_MS = 480; // durée du flash quand une pièce s'aimante
+const C = { indigo: '#313280', ink: '#1b1c55', red: '#c20e1a', blue: '#4d85d0', gray2: '#d9d9d9', gray5: '#b1b1b0', white: '#ffffff' };
 
 // Images du dossier images/centrale (versions optimisées dans assets/img).
 const PUZZLES = [
@@ -16,12 +18,13 @@ const $ = (id) => document.getElementById(id);
 const els = {
   picker: $('picker'), grid: $('grid'),
   build: $('build'), wrap: $('canvas-wrap'), canvas: $('canvas'), back: $('back'),
-  progress: $('progress'), count: $('count'), timerText: $('timer-text'), timer: $('timer'),
-  result: $('result'), rEyebrow: $('result-eyebrow'), rTitle: $('result-title'), rTime: $('result-time'),
+  progress: $('progress'), count: $('count'),
+  result: $('result'), rTitle: $('result-title'), rTime: $('result-time'),
   rText: $('result-text'), form: $('nameform'), name: $('name'), rBoard: $('result-board'),
   again: $('again'), other: $('other'),
 };
 const ctx = els.canvas.getContext('2d');
+const setTimer = makeTimer({ root: $('timer'), text: $('timer-text'), bar: $('timer-bar') }, MAX_TIME);
 
 const cols = 4;     // 4 × 2 = 8 pièces
 let current = null;   // puzzle choisi
@@ -168,12 +171,9 @@ function draw() {
   ctx.setTransform(g.dpr, 0, 0, g.dpr, 0, 0);
   ctx.clearRect(0, 0, g.W, g.H);
 
-  // Plateau : image fantôme + grille
+  // Plateau blanc, sans image fantôme (trop facile sinon) : seuls les contours des pièces guident
   ctx.fillStyle = C.white;
   ctx.fillRect(g.bx, g.by, g.bw, g.bh);
-  ctx.globalAlpha = 0.16;
-  ctx.drawImage(g.boardImg, g.bx, g.by, g.bw, g.bh);
-  ctx.globalAlpha = 1;
   ctx.strokeStyle = C.gray5;
   ctx.lineWidth = 1;
   ctx.setLineDash([6, 6]);
@@ -184,7 +184,7 @@ function draw() {
     ctx.restore();
   }
   ctx.setLineDash([]);
-  ctx.strokeStyle = C.indigo;
+  ctx.strokeStyle = C.white;
   ctx.lineWidth = 3;
   ctx.strokeRect(g.bx, g.by, g.bw, g.bh);
 
@@ -192,7 +192,7 @@ function draw() {
     ctx.save();
     ctx.translate(p.x, p.y);
     if (lifted) {
-      ctx.shadowColor = 'rgb(49 50 128 / 0.45)';
+      ctx.shadowColor = 'rgb(0 0 0 / 0.5)';
       ctx.shadowBlur = 22;
       ctx.shadowOffsetY = 10;
       ctx.fillStyle = C.white;
@@ -203,20 +203,31 @@ function draw() {
     ctx.clip(p.path);
     ctx.drawImage(g.boardImg, -p.c * g.pw, -p.r * g.ph, g.bw, g.bh);
     ctx.restore();
-    ctx.lineWidth = p.locked ? 1 : 2;
-    ctx.strokeStyle = p.locked ? 'rgb(255 255 255 / 0.55)' : C.white;
-    ctx.stroke(p.path);
-    if (!p.locked) {
-      ctx.lineWidth = 1;
-      ctx.strokeStyle = C.indigo;
-      ctx.stroke(p.path);
+    // Flash d'aimantation : voile blanc qui s'efface + contour épais
+    const snap = p.locked && p.snapAt ? 1 - (performance.now() - p.snapAt) / SNAP_MS : 0;
+    if (snap > 0) {
+      ctx.fillStyle = `rgb(255 255 255 / ${0.75 * snap})`;
+      ctx.fill(p.path);
     }
+    ctx.lineWidth = snap > 0 ? 1 + 5 * snap : p.locked ? 1 : 2;
+    ctx.strokeStyle = p.locked && snap <= 0 ? 'rgb(255 255 255 / 0.55)' : C.white;
+    ctx.stroke(p.path);
     ctx.restore();
   };
 
   for (const p of g.pieces) if (p.locked) paint(p, false);
   for (const p of g.pieces) if (!p.locked && p !== drag?.piece) paint(p, false);
   if (drag) paint(drag.piece, true);
+}
+
+// Après la fin de partie, on continue de dessiner le temps du dernier flash.
+function settle() {
+  const until = performance.now() + SNAP_MS;
+  const step = () => {
+    draw();
+    if (performance.now() < until) raf = requestAnimationFrame(step);
+  };
+  step();
 }
 
 // ---------- Partie ----------
@@ -238,10 +249,9 @@ function startGame() {
 
 function updateHud() {
   const done = state.pieces.filter((p) => p.locked).length;
-  els.count.textContent = `${done} / ${state.pieces.length} pièces`;
-  els.timerText.textContent = formatTime(elapsed);
-  els.progress.style.width = `${Math.min(100, (elapsed / MAX_TIME) * 100)}%`;
-  els.timer.classList.toggle('is-low', elapsed >= MAX_TIME - 10);
+  els.count.firstChild.textContent = `${done} / ${state.pieces.length} `;
+  els.progress.style.width = `${(done / state.pieces.length) * 100}%`; // la barre suit les pièces, l'anneau suit le temps
+  setTimer(MAX_TIME - elapsed);
 }
 
 function loop() {
@@ -260,19 +270,17 @@ function end(won) {
   // temps mesuré à l'instant exact de la fin, indépendamment du rythme d'affichage
   elapsed = Math.min(MAX_TIME, (performance.now() - startTime) / 1000);
   updateHud();
-  draw();
+  settle();
   els.rBoard.replaceChildren();
   els.form.hidden = !won;
   els.name.value = '';
   if (won) {
-    els.rEyebrow.textContent = 'Centrale reconstituée';
-    els.rTitle.innerHTML = 'Bravo !<br><em>Ton temps</em>';
+    els.rTitle.innerHTML = 'Centrale reconstituée <em>en</em>';
     els.rTime.hidden = false;
     els.rTime.textContent = formatTime(elapsed);
     els.rText.innerHTML = '<strong>Montre cet écran à l’animateur pour récupérer ton goodie.</strong> Inscris ton pseudo pour entrer au classement du jour.';
   } else {
-    els.rEyebrow.textContent = 'Temps écoulé';
-    els.rTitle.innerHTML = 'Presque !<br><em>30 secondes, c’est court</em>';
+    els.rTitle.innerHTML = 'Temps écoulé. <em>30 secondes, c’est court</em>';
     els.rTime.hidden = true;
     const done = state.pieces.filter((p) => p.locked).length;
     els.rText.textContent = `${done} pièce${done > 1 ? 's' : ''} sur ${state.pieces.length} en place. Retente ta chance, tu connais l’image maintenant.`;
@@ -329,7 +337,7 @@ function drop(e) {
   const g = state, p = drag.piece;
   const tx = g.bx + p.c * g.pw, ty = g.by + p.r * g.ph;
   if (Math.hypot(p.x - tx, p.y - ty) < Math.min(g.pw, g.ph) * 0.32) {
-    p.x = tx; p.y = ty; p.locked = true; // aimantation
+    p.x = tx; p.y = ty; p.locked = true; p.snapAt = performance.now(); // aimantation
   }
   drag = null;
   updateHud();
@@ -364,14 +372,14 @@ function toPicker() {
   els.result.hidden = true;
   els.build.hidden = true;
   els.picker.hidden = false;
-  els.timerText.textContent = formatTime(0);
-  els.timer.classList.remove('is-low');
+  setTimer(MAX_TIME);
 }
 els.back.addEventListener('click', toPicker);
 els.other.addEventListener('click', toPicker);
 els.again.addEventListener('click', startGame);
 
 buildPicker();
+setTimer(MAX_TIME);
 
 // Aide aux tests : ?debug expose l'état du puzzle (lecture seule côté jeu).
 if (new URLSearchParams(location.search).has('debug')) window.__azitoPuzzle = () => state;

@@ -1,6 +1,8 @@
 // Turbine Match — observer une turbine, trouver le seul schéma identique parmi A / B / C.
-// Le visiteur choisit l'une des 4 turbines (recréations three.js des visuels du dossier images/turbine) ; 3 niveaux de difficulté.
+// Le visiteur choisit l'une des 4 turbines (recréations three.js des visuels du dossier images/turbine).
+// Le niveau est un réglage d'animateur : ?serie=1|2|3, sinon il alterne chaque jour.
 import { mountViewer, renderSchemas, webglAvailable, VARIANTS } from './turbine-model.js';
+import { makeTimer } from './timer.js';
 
 const DURATION = 30;
 const LETTERS = ['A', 'B', 'C'];
@@ -44,28 +46,23 @@ const ORDER = ['rotor', 'ecorche', 'maquette', 'coupe']; // ordre des vignettes
 
 const $ = (id) => document.getElementById(id);
 const els = {
-  picker: $('picker'), grid: $('grid'), match: $('match'),
-  stage: $('stage'), options: [...document.querySelectorAll('.option')],
-  intro: $('intro'), result: $('result'), start: $('start'), again: $('again'), see: $('see'), other: $('other'),
-  levels: [...document.querySelectorAll('#levels .chip')], levelLabel: $('level-label'), hint: $('hint'),
-  timer: $('timer'), timerText: $('timer-text'), timerBar: $('timer-bar'),
-  rTitle: $('result-title'), rText: $('result-text'), rEyebrow: $('result-eyebrow'),
+  picker: $('picker'), grid: $('grid'), match: $('match'), stage: $('stage'),
+  options: [...document.querySelectorAll('.option')],
+  prompt: $('prompt'), verdict: $('verdict'), vTitle: $('verdict-title'), vText: $('verdict-text'),
+  again: $('again'), see: $('see'), other: $('other'), levelLabel: $('level-label'),
 };
+const setTimer = makeTimer({ root: $('timer'), text: $('timer-text'), bar: $('timer-bar') }, DURATION);
 
-const RING = 2 * Math.PI * 22;
-els.timerBar.style.strokeDasharray = RING;
-
-// Niveau par défaut : ?serie=1|2|3, sinon alternance automatique selon le jour.
 // ?turbine=rotor|ecorche|maquette|coupe force une turbine et saute l'écran de choix.
 const params = new URLSearchParams(location.search);
 const serie = parseInt(params.get('serie'), 10);
 const day = Math.floor(Date.now() / 86_400_000);
-let level = serie >= 1 && serie <= 3 ? serie - 1 : day % LEVELS.length;
+const level = serie >= 1 && serie <= 3 ? serie - 1 : day % LEVELS.length;
 const forced = VARIANTS[params.get('turbine')] ? params.get('turbine') : null;
 let current = forced || ORDER[0]; // turbine choisie
 
 let viewer = null;
-let round = null;      // { variant, answer, options: [{cfg, mutation|null}] }
+let round = null;      // { variant, answer, options: [{cfg, mutation|null}], shown }
 let deadline = 0, raf = 0, playing = false;
 
 const shuffle = (arr) => {
@@ -76,12 +73,6 @@ const shuffle = (arr) => {
   }
   return a;
 };
-
-function setLevel(i) {
-  level = i;
-  els.levels.forEach((b) => b.setAttribute('aria-pressed', String(Number(b.dataset.level) === i)));
-  els.levelLabel.textContent = LEVELS[i];
-}
 
 function newRound() {
   const variant = current;
@@ -98,17 +89,10 @@ function newRound() {
     btn.querySelector('img').src = urls[i];
     btn.className = 'option';
     btn.disabled = false;
+    btn.querySelector('.option__mark').hidden = true;
   });
-  els.hint.textContent = `${VARIANTS[variant].label} · fais-la pivoter du doigt`;
   viewer.setConfig(base);
   viewer.resetView();
-}
-
-function setTimer(remaining) {
-  const r = Math.max(0, remaining);
-  els.timerText.textContent = String(Math.ceil(r));
-  els.timerBar.style.strokeDashoffset = String(RING * (1 - r / DURATION));
-  els.timer.classList.toggle('is-low', r <= 10);
 }
 
 function loop() {
@@ -137,11 +121,14 @@ function buildPicker() {
   });
 }
 
+function showBar(verdict) {
+  els.prompt.hidden = verdict;
+  els.verdict.hidden = !verdict;
+}
+
 function toPicker() {
   playing = false;
   cancelAnimationFrame(raf);
-  els.intro.hidden = true;
-  els.result.hidden = true;
   setTimer(DURATION);
   if (forced) return start();
   els.match.hidden = true;
@@ -149,10 +136,9 @@ function toPicker() {
 }
 
 function start() {
-  els.intro.hidden = true;
-  els.result.hidden = true;
   els.picker.hidden = true;
   els.match.hidden = false;
+  showBar(false);
   newRound();
   playing = true;
   deadline = performance.now() + DURATION * 1000;
@@ -168,8 +154,9 @@ function finish(choice) {
 
   els.options.forEach((btn, i) => {
     btn.disabled = true;
-    if (i === answer) btn.classList.add('is-correct');
-    else if (i === choice) btn.classList.add('is-wrong');
+    const mark = btn.querySelector('.option__mark');
+    if (i === answer) { btn.classList.add('is-correct'); mark.textContent = 'Le bon schéma'; mark.hidden = false; }
+    else if (i === choice) { btn.classList.add('is-wrong'); mark.textContent = 'Ton choix'; mark.hidden = false; }
     else btn.classList.add('is-dim');
   });
 
@@ -179,47 +166,50 @@ function finish(choice) {
   const shownLetter = LETTERS[options.indexOf(shown)];
 
   if (won) {
-    els.rEyebrow.textContent = 'Bonne réponse';
-    els.rTitle.innerHTML = 'Bien vu !<br><em>Schéma ' + LETTERS[answer] + '</em>';
-    els.rText.innerHTML = 'Tu as l’œil d’un opérateur. <strong>Montre cet écran à l’animateur pour récupérer ton goodie.</strong>';
+    els.vTitle.textContent = `Bien vu ! C’est le schéma ${LETTERS[answer]}`;
+    els.vText.innerHTML = '<strong>Montre cet écran à l’animateur pour récupérer ton goodie.</strong>';
   } else {
-    els.rEyebrow.textContent = choice < 0 ? 'Temps écoulé' : 'Pas tout à fait';
-    els.rTitle.innerHTML = 'C’était le<br><em>schéma ' + LETTERS[answer] + '</em>';
-    els.rText.textContent = `Dans le schéma ${shownLetter}, ${shown.mutation.text}.`;
+    els.vTitle.textContent = choice < 0
+      ? `Temps écoulé. C’était le schéma ${LETTERS[answer]}`
+      : `Raté. C’était le schéma ${LETTERS[answer]}`;
+    els.vText.textContent = `Dans le schéma ${shownLetter}, ${shown.mutation.text}.`;
   }
   els.see.hidden = won;
-  setTimeout(() => { els.result.hidden = false; }, 900);
+  showBar(true);
 }
 
-// Ferme le panneau et fait clignoter sur la turbine l'élément concerné.
+// Fait clignoter sur la turbine l'élément concerné : les schémas restent sous les yeux.
 function seeDifference() {
-  els.result.hidden = true;
+  viewer.resetView();
   viewer.highlight(round.shown.mutation.part);
-  setTimeout(() => { els.result.hidden = false; els.see.hidden = true; }, 6000);
+  els.see.hidden = true;
 }
 
 function init() {
-  setLevel(level);
+  els.levelLabel.textContent = LEVELS[level];
   if (!webglAvailable()) {
+    els.picker.hidden = true;
     els.match.hidden = false;
     els.match.innerHTML =
-      '<div class="notice"><h2>La 3D n’est pas disponible sur cet écran.</h2>' +
+      '<div class="notice"><h2>La 3D n’est pas disponible sur cet écran</h2>' +
       '<p>Turbine Match a besoin de WebGL. Le puzzle Build Azito fonctionne partout.</p>' +
       '<a class="btn" href="build-azito.html"><span>Jouer à Build Azito</span></a></div>';
-    els.intro.hidden = true;
     return;
   }
+  // Les <img> des schémas sont créés ici : jamais d'image sans source dans la page.
+  els.options.forEach((btn) => {
+    const img = document.createElement('img');
+    img.alt = '';
+    btn.prepend(img);
+    btn.addEventListener('click', () => finish(Number(btn.dataset.i)));
+  });
   viewer = mountViewer(els.stage);
   setTimer(DURATION);
-  buildPicker();
-  els.options.forEach((b) => { b.disabled = true; });
-
-  els.levels.forEach((b) => b.addEventListener('click', () => setLevel(Number(b.dataset.level))));
-  els.start.addEventListener('click', toPicker);
-  els.other.addEventListener('click', toPicker);
   els.again.addEventListener('click', start);
+  els.other.addEventListener('click', toPicker);
   els.see.addEventListener('click', seeDifference);
-  els.options.forEach((btn) => btn.addEventListener('click', () => finish(Number(btn.dataset.i))));
+  if (forced) start();
+  else buildPicker();
 }
 
 init();

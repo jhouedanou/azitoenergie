@@ -1,4 +1,4 @@
-/* Azito Energie — tokens issus de la charte (Logo Guidelines, p.3) */
+/* Azito Energie — tokens « Salle de contrôle ». Couleurs issues de la charte (Logo Guidelines, p.3). */
 :root {
   /* Couleurs primaires */
   --azito-blue: #4d85d0;   /* Pantone 279C */
@@ -11,33 +11,42 @@
   --azito-gray-5: #b1b1b0; /* Cool Gray 5C */
   --azito-gray-2: #d9d9d9; /* Cool Gray 2C */
 
+  /* Dérivés de l'indigo (mêmes teinte et saturation, luminosité seule) */
+  --ink: #1b1c55;          /* fond de salle : indigo assombri */
+  --mist: #c9ccef;         /* texte secondaire sur indigo : indigo éclairci, 7:1 */
+
   /* Rôles */
-  --surface: var(--azito-white);
-  --surface-strong: var(--azito-indigo);
-  --text: var(--azito-indigo);
-  --text-muted: var(--azito-gray-8);
-  --line: var(--azito-gray-2);
+  --surface: var(--ink);
+  --panel: rgb(27 28 85 / 0.88);
+  --text: var(--azito-white);
+  --text-muted: var(--mist);
+  --line: rgb(255 255 255 / 0.22);
   --accent: var(--azito-red);
-  --primary: var(--azito-blue);
+  --screen: linear-gradient(var(--azito-white), var(--azito-gray-2)); /* « écran » clair où vit la turbine */
+  --photo-veil: linear-gradient(rgb(27 28 85 / 0.9), rgb(49 50 128 / 0.86)); /* voile sur la photo aérienne */
 
-  /* Typographie : Univers (charte). Repli système si la police n'est pas installée / licenciée. */
-  --font: "Univers", "Univers LT Std", "Univers LT Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --fw-light: 300;
-  --fw-bold: 700;
+  /* Typographie : Barlow (texte) et Barlow Condensed (titres, chiffres, étiquettes) */
+  --font: "Barlow", "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Barlow Condensed", "Barlow", "Arial Narrow", Arial, sans-serif;
+  --fw-regular: 400;
+  --fw-bold: 600;
+  --fw-display: 700;
 
-  /* Échelle */
-  --fs-xs: clamp(0.8rem, 0.75rem + 0.2vw, 0.95rem);
-  --fs-sm: clamp(0.95rem, 0.9rem + 0.3vw, 1.15rem);
-  --fs-md: clamp(1.05rem, 0.95rem + 0.5vw, 1.4rem);
-  --fs-lg: clamp(1.4rem, 1.1rem + 1.2vw, 2.2rem);
-  --fs-xl: clamp(2.1rem, 1.3rem + 3.4vw, 4.6rem);
+  /* Échelle fluide, pensée pour une borne 1920 × 1080 (elle continue de croître jusque-là) */
+  --fs-xs: clamp(0.9rem, 0.62rem + 0.56vw, 1.3rem);
+  --fs-sm: clamp(1rem, 0.66rem + 0.74vw, 1.55rem);
+  --fs-md: clamp(1.1rem, 0.68rem + 0.96vw, 1.85rem);
+  --fs-lg: clamp(1.6rem, 0.8rem + 2.1vw, 3.3rem);
+  --fs-xl: clamp(2.4rem, 0.9rem + 4.4vw, 6rem);
+  --fs-clock: clamp(2.2rem, 1rem + 3.4vw, 5rem);
 
-  --gutter: clamp(16px, 3vw, 56px);
-  --tap: 64px;             /* cible tactile minimale (borne) */
-  --photo-veil: linear-gradient(rgb(49 50 128 / 0.86), rgb(49 50 128 / 0.86)); /* voile indigo sur la photo aérienne */
-  --slash: 18deg;          /* inclinaison de l'éclair du logo */
+  --gutter: clamp(16px, 3.4vw, 72px);
+  --gap: clamp(12px, 1.6vw, 32px);
+  --tap: clamp(60px, 4.6vw, 88px);   /* cible tactile : 88 px sur la borne */
+  --slash: 18deg;                    /* inclinaison de l'éclair du logo */
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
 
   /* Logo : largeur mini 35 mm ≈ 132 px ; zone d'exclusion = hauteur du « E » ≈ 16 % de la largeur */
-  --logo-w: clamp(132px, 16vw, 260px);
+  --logo-w: clamp(132px, 13vw, 250px);
   --logo-clear: calc(var(--logo-w) * 0.16);
 }

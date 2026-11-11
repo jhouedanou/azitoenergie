@@ -280,7 +280,7 @@ export function renderSchemas(configs, width = 1040, height = 520) {
   renderer.setSize(width, height, false);
   renderer.setClearColor(PALETTE.white, 1);
   const camera = new THREE.PerspectiveCamera(30, width / height, 0.1, 200);
-  frameCamera(camera, width / height, 1.06);
+  frameCamera(camera, width / height, 1.0); // cadrage serré : le schéma occupe toute sa vignette
   const urls = configs.map((cfg) => {
     const scene = new THREE.Scene();
     const model = buildTurbine(cfg, 'schema');
