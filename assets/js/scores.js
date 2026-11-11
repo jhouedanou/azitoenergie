@@ -94,7 +94,7 @@ export function addScore(name, time, puzzle) {
   const entry = {
     id: uuid(),
     name: (name || '').trim().slice(0, 14) || 'Anonyme',
-    time: Math.min(30, Math.max(0.1, Math.round(time * 10) / 10)),
+    time: Math.min(60, Math.max(0.1, Math.round(time * 10) / 10)),
     puzzle,
     at: new Date().toISOString(),
     synced: false,

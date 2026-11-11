@@ -7,9 +7,15 @@ create table if not exists public.scores (
   created_at timestamptz not null default now(),
   day date not null default ((now() at time zone 'Africa/Abidjan')::date),
   name text not null check (char_length(name) between 1 and 14),
-  time_s numeric(4, 1) not null check (time_s > 0 and time_s <= 30),
-  puzzle text not null check (puzzle in ('aerienne', 'cheminees', 'cheminee'))
+  time_s numeric(4, 1) not null check (time_s > 0 and time_s <= 60),
+  puzzle text not null check (puzzle in ('lagune', 'aerienne', 'cheminees', 'cheminee', 'unite'))
 );
+
+-- Si la table existait déjà avec les anciennes limites (30 s, 3 images), on les remplace.
+alter table public.scores drop constraint if exists scores_time_s_check;
+alter table public.scores add constraint scores_time_s_check check (time_s > 0 and time_s <= 60);
+alter table public.scores drop constraint if exists scores_puzzle_check;
+alter table public.scores add constraint scores_puzzle_check check (puzzle in ('lagune', 'aerienne', 'cheminees', 'cheminee', 'unite'));
 
 create index if not exists scores_day_time_idx on public.scores (day, time_s);
 

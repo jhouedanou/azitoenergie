@@ -35,7 +35,7 @@
   <!-- Choix de la turbine : c'est aussi l'écran d'explication -->
   <main class="picker" id="picker">
     <h1>Choisis ta turbine</h1>
-    <p class="picker__note">Observe-la, puis touche le seul schéma identique parmi A, B et C. Tu as 30 secondes : le chrono part dès que tu touches une turbine.</p>
+    <p class="picker__note">Tu as 10 secondes pour la mémoriser. Elle disparaît, puis tu touches le seul schéma identique parmi A, B et C. 30 secondes en tout : le chrono part dès que tu touches une turbine.</p>
     <div class="picker__grid picker__grid--4" id="grid"></div>
   </main>
 
@@ -44,8 +44,9 @@
 
     <!-- Consigne pendant la manche -->
     <div class="match__bar" id="prompt">
-      <b>Quel schéma est identique ?</b>
-      <p class="match__tip">Fais pivoter la turbine du doigt. Un seul schéma est exact.</p>
+      <b id="prompt-title">Mémorise la turbine</b>
+      <p class="match__tip" id="prompt-tip"></p>
+      <button class="btn btn--sm btn--onDark" type="button" id="ready"><span>Je suis prêt</span></button>
     </div>
 
     <!-- Verdict : il prend la place de la consigne et laisse les schémas visibles -->

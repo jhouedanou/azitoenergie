@@ -1,6 +1,6 @@
 ---
 name: Azito Energie — Les défis du stand
-description: Deux jeux de 30 secondes sur borne tactile, dans une ambiance de salle de contrôle aux couleurs de la charte Azito.
+description: Deux jeux de moins d’une minute sur borne tactile, dans une ambiance de salle de contrôle aux couleurs de la charte Azito.
 colors:
   indigo: "#313280"
   ink: "#1b1c55"
@@ -81,7 +81,7 @@ components:
 
 **Creative North Star: "La salle de contrôle"**
 
-L'interface se lit comme le synoptique d'une centrale : fond indigo sombre, chiffres condensés très grands, une seule consigne par écran. Elle tourne sur une borne tactile en paysage (1920 × 1080), dans un hall de salon, face à un visiteur debout qui a trente secondes. Tout ce qui ne sert pas à jouer est retiré.
+L'interface se lit comme le synoptique d'une centrale : fond indigo sombre, chiffres condensés très grands, une seule consigne par écran. Elle tourne sur une borne tactile en paysage (1920 × 1080), dans un hall de salon, face à un visiteur debout qui a moins d’une minute. Tout ce qui ne sert pas à jouer est retiré.
 
 La photo aérienne de la centrale reste présente derrière un voile indigo sur les écrans d'attente (accueil, choix, résultat). Les zones de jeu, elles, sont nettes : la turbine vit sur un « écran » clair, le puzzle sur un plateau blanc.
 

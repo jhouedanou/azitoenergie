@@ -5,6 +5,7 @@ import { mountViewer, renderSchemas, webglAvailable, VARIANTS } from './turbine-
 import { makeTimer } from './timer.js';
 
 const DURATION = 30;
+const OBSERVE = 10; // secondes d'observation avant que la turbine disparaisse (jeu de mémoire)
 const LETTERS = ['A', 'B', 'C'];
 const LEVELS = ['Niveau 1', 'Niveau 2', 'Niveau 3'];
 
@@ -48,7 +49,7 @@ const $ = (id) => document.getElementById(id);
 const els = {
   picker: $('picker'), grid: $('grid'), match: $('match'), stage: $('stage'),
   options: [...document.querySelectorAll('.option')],
-  prompt: $('prompt'), verdict: $('verdict'), vTitle: $('verdict-title'), vText: $('verdict-text'),
+  prompt: $('prompt'), pTitle: $('prompt-title'), pTip: $('prompt-tip'), ready: $('ready'), verdict: $('verdict'), vTitle: $('verdict-title'), vText: $('verdict-text'),
   again: $('again'), see: $('see'), other: $('other'), levelLabel: $('level-label'),
 };
 const setTimer = makeTimer({ root: $('timer'), text: $('timer-text'), bar: $('timer-bar') }, DURATION);
@@ -64,6 +65,7 @@ let current = forced || ORDER[0]; // turbine choisie
 let viewer = null;
 let round = null;      // { variant, answer, options: [{cfg, mutation|null}], shown }
 let deadline = 0, raf = 0, playing = false;
+let phase = 'idle';    // 'observe' → 'recall' → 'result'
 
 const shuffle = (arr) => {
   const a = [...arr];
@@ -88,7 +90,7 @@ function newRound() {
   els.options.forEach((btn, i) => {
     btn.querySelector('img').src = urls[i];
     btn.className = 'option';
-    btn.disabled = false;
+    btn.disabled = true; // actifs seulement une fois la turbine masquée
     btn.querySelector('.option__mark').hidden = true;
   });
   viewer.setConfig(base);
@@ -100,6 +102,11 @@ function loop() {
   const remaining = (deadline - performance.now()) / 1000;
   setTimer(remaining);
   if (remaining <= 0) return finish(-1);
+  if (phase === 'observe') {
+    const left = Math.ceil(remaining - (DURATION - OBSERVE));
+    if (left <= 0) recall();
+    else els.pTip.textContent = `Fais-la pivoter du doigt. Elle disparaît dans ${left} s.`;
+  }
   raf = requestAnimationFrame(loop);
 }
 
@@ -121,6 +128,22 @@ function buildPicker() {
   });
 }
 
+function setPhase(next) {
+  phase = next;
+  els.match.classList.toggle('is-observe', next === 'observe');
+  els.match.classList.toggle('is-recall', next === 'recall');
+}
+
+// La turbine disparaît : il faut retrouver son schéma de mémoire.
+function recall() {
+  if (phase !== 'observe') return;
+  setPhase('recall');
+  els.pTitle.textContent = 'Quel schéma est identique ?';
+  els.pTip.textContent = 'De mémoire : un seul schéma est exact.';
+  els.ready.hidden = true;
+  els.options.forEach((btn) => { btn.disabled = false; });
+}
+
 function showBar(verdict) {
   els.prompt.hidden = verdict;
   els.verdict.hidden = !verdict;
@@ -128,6 +151,7 @@ function showBar(verdict) {
 
 function toPicker() {
   playing = false;
+  setPhase('idle');
   cancelAnimationFrame(raf);
   setTimer(DURATION);
   if (forced) return start();
@@ -139,6 +163,10 @@ function start() {
   els.picker.hidden = true;
   els.match.hidden = false;
   showBar(false);
+  setPhase('observe');
+  els.pTitle.textContent = 'Mémorise la turbine';
+  els.pTip.textContent = `Fais-la pivoter du doigt. Elle disparaît dans ${OBSERVE} s.`;
+  els.ready.hidden = false;
   newRound();
   playing = true;
   deadline = performance.now() + DURATION * 1000;
@@ -149,6 +177,8 @@ function finish(choice) {
   if (!playing) return;
   playing = false;
   cancelAnimationFrame(raf);
+  setPhase('result'); // la turbine revient à côté des schémas
+  viewer.resetView();
   const { answer, options } = round;
   const won = choice === answer;
 
@@ -208,6 +238,7 @@ function init() {
   els.again.addEventListener('click', start);
   els.other.addEventListener('click', toPicker);
   els.see.addEventListener('click', seeDifference);
+  els.ready.addEventListener('click', recall);
   if (forced) start();
   else buildPicker();
 }

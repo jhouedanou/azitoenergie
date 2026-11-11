@@ -213,6 +213,7 @@ input { user-select: text; -webkit-user-select: text; font: inherit; caret-color
 .picker__note { color: var(--text-muted); max-width: 60ch; }
 .picker__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--gap); }
 .picker__grid.picker__grid--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.picker__grid.picker__grid--5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
 .pick {
   position: relative; display: grid; grid-template-rows: auto auto;
   padding: 0; border: 3px solid var(--azito-white); background: var(--ink);
@@ -230,6 +231,12 @@ input { user-select: text; -webkit-user-select: text; font: inherit; caret-color
 
 /* Turbine Match */
 .match { display: grid; grid-template-rows: minmax(0, 1fr) auto auto; min-height: 0; }
+/* Phase 1 : on observe la turbine seule. Phase 2 : elle disparaît, les schémas prennent toute la place. */
+.match.is-observe { grid-template-rows: minmax(0, 1fr) auto; }
+.match.is-observe .match__options { display: none; }
+.match.is-recall { grid-template-rows: auto minmax(0, 1fr); }
+.match.is-recall .match__stage { display: none; }
+.match.is-recall .match__options { align-content: center; }
 .match__stage { position: relative; min-height: 0; background: var(--screen); touch-action: none; cursor: grab; }
 .match__stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .match__bar {
@@ -324,11 +331,12 @@ input { user-select: text; -webkit-user-select: text; font: inherit; caret-color
   .home { height: auto; min-height: 100dvh; overflow: visible; background-attachment: fixed; }
   .lobby { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: auto; grid-template-areas: "head head" "match build" "board board"; }
   .entry__media { min-height: clamp(170px, 34vw, 360px); }
+  .picker__grid.picker__grid--5 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .picker { justify-content: flex-start; }
 }
 @media (max-width: 860px) {
   .topbar__title span { display: none; }
-  .picker__grid, .picker__grid.picker__grid--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .picker__grid, .picker__grid.picker__grid--4, .picker__grid.picker__grid--5 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .match__bar p.match__tip { display: none; }
 }
 @media (max-width: 640px) {
@@ -341,7 +349,7 @@ input { user-select: text; -webkit-user-select: text; font: inherit; caret-color
   .match { grid-template-rows: minmax(0, 0.8fr) auto minmax(0, 1.4fr); }
   .match__options { grid-template-columns: 1fr; }
   .option { aspect-ratio: auto; }
-  .picker__grid, .picker__grid.picker__grid--4 { grid-template-columns: 1fr; }
+  .picker__grid, .picker__grid.picker__grid--4, .picker__grid.picker__grid--5 { grid-template-columns: 1fr; }
 }
 /* Téléphone en paysage : on rend la hauteur à la turbine */
 @media (max-height: 480px) and (orientation: landscape) {
@@ -350,6 +358,8 @@ input { user-select: text; -webkit-user-select: text; font: inherit; caret-color
   .match__bar { padding-block: 0.25em; }
   .match__bar p.match__tip { display: none; }
   .picker__grid, .picker__grid.picker__grid--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .picker__grid.picker__grid--5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.picker__grid.picker__grid--5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
   .picker h1 { font-size: var(--fs-lg); }
 }
 
