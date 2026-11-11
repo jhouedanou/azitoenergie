@@ -4,7 +4,7 @@
     {
       "name": "azito",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8010", "--directory", "/Users/bfa/Developer/GitHub/azitoenergie"],
+      "runtimeArgs": ["-m", "http.server", "8010", "--directory", "/Users/bfaproduction/Documents/GitHub/azitoenergie"],
       "port": 8010
     }
   ]
