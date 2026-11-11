@@ -1,0 +1,39 @@
+{
+  "name": "azito-defis",
+  "productName": "Azito Defis",
+  "version": "1.1.0",
+  "description": "Les défis du stand Azito Energie, version Windows pour la borne",
+  "author": "Azito Energie",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "prepare-web": "node prepare.mjs",
+    "start": "npm run prepare-web && electron .",
+    "build:win": "npm run prepare-web && electron-builder --win portable --x64"
+  },
+  "build": {
+    "appId": "ci.azitoenergie.defis",
+    "productName": "Azito Defis",
+    "files": [
+      "main.js",
+      "web/**/*"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": "portable",
+      "icon": "build/icon.png",
+      "signAndEditExecutable": false
+    },
+    "portable": {
+      "artifactName": "Azito-Defis-${version}.exe"
+    }
+  },
+  "devDependencies": {
+    "@fontsource/barlow": "^5.3.0",
+    "@fontsource/barlow-condensed": "^5.3.0",
+    "electron": "^45.3.0",
+    "electron-builder": "^26.18.0"
+  }
+}
