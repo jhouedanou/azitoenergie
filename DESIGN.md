@@ -1,10 +1,8 @@
 ---
-name: Azito Energie — Les défis du stand
+name: Les défis du stand Azito Energie
 description: Deux jeux de moins d’une minute sur borne tactile, dans une ambiance de salle de contrôle aux couleurs de la charte Azito.
 colors:
   indigo: "#313280"
-  ink: "#1b1c55"
-  mist: "#c9ccef"
   white: "#ffffff"
   red: "#c20e1a"
   blue: "#4d85d0"
@@ -63,7 +61,7 @@ components:
     textColor: "{colors.white}"
     rounded: "{rounded.none}"
   pick:
-    backgroundColor: "{colors.ink}"
+    backgroundColor: "{colors.indigo}"
     textColor: "{colors.white}"
     rounded: "{rounded.none}"
   option:
@@ -75,17 +73,17 @@ components:
     textColor: "{colors.white}"
 ---
 
-# Design System: Azito Energie — Les défis du stand
+# Design System : les défis du stand Azito Energie
 
 ## Overview
 
-**Creative North Star: "La salle de contrôle"**
+**Idée directrice : la salle de contrôle**
 
-L'interface se lit comme le synoptique d'une centrale : fond indigo sombre, chiffres condensés très grands, une seule consigne par écran. Elle tourne sur une borne tactile en paysage (1920 × 1080), dans un hall de salon, face à un visiteur debout qui a moins d’une minute. Tout ce qui ne sert pas à jouer est retiré.
+L'interface se lit comme le synoptique d'une centrale : fond indigo de la charte, chiffres condensés très grands, une seule consigne par écran. Elle tourne sur une borne tactile en paysage (1920 × 1080), dans un hall de salon, face à un visiteur debout qui a moins d’une minute. Tout ce qui ne sert pas à jouer est retiré.
 
 La photo aérienne de la centrale reste présente derrière un voile indigo sur les écrans d'attente (accueil, choix, résultat). Les zones de jeu, elles, sont nettes : la turbine vit sur un « écran » clair, le puzzle sur un plateau blanc.
 
-**Key Characteristics:**
+**En résumé :**
 - Sombre par défaut, clair uniquement là où l'on regarde un objet (turbine, schémas, plateau).
 - Aucun arrondi : angles droits partout, et l'inclinaison à 18° de l'éclair du logo pour les boutons.
 - Le temps est toujours visible : chrono à rebours géant, en haut à droite, sur les deux jeux.
@@ -96,8 +94,7 @@ La photo aérienne de la centrale reste présente derrière un voile indigo sur 
 La palette est celle de la charte Azito Energie, plus deux dérivés de l'indigo obtenus en ne changeant que la luminosité.
 
 ### Primary
-- **Indigo Azito** (`indigo`) : surface du jeu de puzzle, texte sur fond blanc, pastilles A/B/C.
-- **Encre de salle** (`ink`) : fond général, barres et en-tête. C'est l'indigo assombri.
+- **Indigo Azito** (`indigo`, Pantone 2756C) : fond général, en-tête, barres, panneaux et surface du puzzle ; texte sur fond blanc, pastilles A/B/C.
 
 ### Secondary
 - **Rouge Azito** (`red`) : l'action principale de chaque écran, le filet du classement, l'alerte des 10 dernières secondes, le mauvais choix.
@@ -107,12 +104,12 @@ La palette est celle de la charte Azito Energie, plus deux dérivés de l'indigo
 
 ### Neutral
 - **Blanc** (`white`) : texte principal, plateau du puzzle, fond des schémas, anneau du chrono.
-- **Brume** (`mist`) : texte secondaire sur fond sombre. C'est l'indigo éclairci, pas un gris.
-- **Gris 2 / 5 / 8** : matières des modèles 3D et dégradé de l'écran de la turbine. Pas de texte.
+- **Gris 2** (`gray-2`, Cool Gray 2C) : texte secondaire sur fond indigo (7,8:1), dégradé de l'écran de la turbine.
+- **Gris 5 / 8** : matières des modèles 3D. Pas de texte.
 
-### Named Rules
-**The Tinted Secondary Rule.** Sur fond indigo, le texte secondaire est en Brume, jamais en gris : 7:1 sur indigo, 4,68:1 au pire sur la photo voilée.
-**The Red Is An Action Rule.** Le rouge ne porte jamais de texte posé sur l'indigo (contraste insuffisant) ; il est toujours un aplat avec du blanc dessus.
+### Règles
+- Toutes les couleurs viennent de la charte, sans teinte dérivée. Le texte secondaire est en Gris 2 : 7,8:1 sur l'indigo, environ 5,5:1 au pire sur la photo voilée.
+- Le rouge ne porte jamais de texte posé sur l'indigo (contraste insuffisant). Il sert d'aplat, avec du blanc dessus.
 
 ## Typography
 
@@ -128,13 +125,13 @@ La palette est celle de la charte Azito Energie, plus deux dérivés de l'indigo
 - **Body** (400, `clamp(1.1rem, 0.68rem + 0.96vw, 1.85rem)`, 1,4) : consignes ; 46 à 60 caractères par ligne.
 - **Label** (600, `clamp(1rem, 0.66rem + 0.74vw, 1.55rem)`) : boutons secondaires, mentions « Ton choix » / « Le bon schéma ».
 
-### Named Rules
-**The No Eyebrow Rule.** Pas de petite étiquette au-dessus d'un titre. Le titre dit tout ; la seconde moitié du titre passe en graisse 500 et en Brume quand il faut une nuance.
-**The Kiosk Scale Rule.** L'échelle continue de grandir jusqu'à 1920 px : texte courant ≈ 29 px et boutons de 88 px sur la borne.
+### Règles
+- Pas de petite étiquette au-dessus d'un titre. Quand il faut une nuance, la seconde moitié du titre passe en graisse 500 et en Gris 2.
+- L'échelle grandit jusqu'à 1920 px de large : texte courant d'environ 29 px et boutons de 88 px sur la borne. Sur l'accueil elle suit aussi la hauteur, pour que tout tienne dans une fenêtre de bureau moins haute.
 
 ## Layout
 
-Chaque page tient dans `100dvh` : un en-tête, puis une zone qui prend le reste. L'accueil est une grille de trois colonnes inégales (1,3 / 1 / 0,82) : Turbine Match, Build Azito, classement. Les deux entrées de jeu ne se ressemblent pas : l'une montre la turbine 3D sur écran clair, l'autre la photo aérienne.
+Chaque page tient dans `100dvh` : un en-tête, puis une zone qui prend le reste. Sur l'accueil, le titre occupe toute la largeur, puis trois panneaux sont alignés en haut et en bas : Turbine Match et Build Azito, de même largeur, et le classement, un peu plus étroit (1 / 1 / 0,8). La première carte montre la turbine 3D sur écran clair, la seconde la photo aérienne.
 
 Les écarts viennent de deux valeurs fluides : `gap` entre éléments, `gutter` pour les marges d'écran.
 
@@ -171,7 +168,7 @@ Angles droits partout (rayon 0). La seule forme propre au système est l'oblique
 - **Focus:** anneau blanc commun.
 
 ### Navigation
-- En-tête encre : logo blanc à gauche (zone d'exclusion de la charte respectée, zone tactile ≥ 48 px), nom du jeu au centre, chrono et plein écran à droite.
+- En-tête encre : logo blanc à gauche (jamais sous 132 px de large, soit les 35 mm de la charte ; zone d'exclusion respectée sur les quatre côtés ; zone tactile ≥ 48 px), nom du jeu au centre, chrono et plein écran à droite.
 
 ### Chrono
 Anneau qui se vide + secondes en chiffres tabulaires. Sous 10 secondes, tout le bloc passe sur aplat rouge.
@@ -179,16 +176,15 @@ Anneau qui se vide + secondes en chiffres tabulaires. Sous 10 secondes, tout le 
 ### Barre de verdict
 Elle remplace la consigne entre la turbine et les schémas : le résultat s'affiche sans rien masquer, avec Rejouer, Voir la différence, Autre turbine, Accueil.
 
-## Do's and Don'ts
+## À faire, à éviter
 
-### Do:
-- **Do** garder le plateau du puzzle entièrement blanc : pas d'image fantôme, seuls les contours pointillés guident.
-- **Do** laisser les schémas visibles quand le verdict tombe.
-- **Do** écrire les consignes à la deuxième personne, en une phrase.
-- **Do** vérifier chaque écran à 1920 × 1080 d'abord, sans défilement.
+### À faire
+- Garder le plateau du puzzle entièrement blanc : pas d'image fantôme, seuls les contours pointillés guident.
+- Laisser les schémas visibles quand le verdict tombe.
+- Écrire les consignes à la deuxième personne, en une phrase.
+- Vérifier chaque écran à 1920 × 1080 d'abord, sans défilement.
 
-### Don't:
-- **Don't** poser de texte rouge ou bleu sur l'indigo.
-- **Don't** utiliser de gris pour du texte sur fond sombre.
-- **Don't** ajouter d'arrondi, de dégradé décoratif ou d'emoji en guise d'icône.
-- **Don't** montrer le niveau de difficulté comme un choix du visiteur : c'est un réglage d'animateur (`?serie=1|2|3`).
+### À éviter
+- Ne pas poser de texte rouge ou bleu sur l'indigo.
+- Ne pas ajouter d'arrondi, de dégradé décoratif ou d'emoji en guise d'icône.
+- Ne pas montrer le niveau de difficulté comme un choix du visiteur : c'est un réglage d'animateur (`?serie=1|2|3`).

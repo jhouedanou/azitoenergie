@@ -2,7 +2,7 @@
 *::before,
 *::after { box-sizing: border-box; }
 
-html { -webkit-text-size-adjust: 100%; background: var(--ink); }
+html { -webkit-text-size-adjust: 100%; background: var(--azito-indigo); }
 [hidden] { display: none !important; }
 
 body {
@@ -19,7 +19,7 @@ body {
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
-  scrollbar-color: var(--mist) var(--ink);
+  scrollbar-color: var(--azito-gray-2) var(--azito-indigo);
 }
 
 h1, h2, h3 {
@@ -31,7 +31,7 @@ h1, h2, h3 {
   text-transform: uppercase;
   text-wrap: balance;
 }
-h1 em, h2 em { font-style: normal; font-weight: 500; color: var(--mist); }
+h1 em, h2 em { font-style: normal; font-weight: 500; color: var(--azito-gray-2); }
 p { margin: 0; }
 img { max-width: 100%; display: block; }
 input { user-select: text; -webkit-user-select: text; font: inherit; caret-color: var(--azito-white); }
@@ -49,14 +49,15 @@ input { user-select: text; -webkit-user-select: text; font: inherit; caret-color
   gap: var(--gap);
   padding: 0 var(--gutter);
   border-bottom: 1px solid var(--line);
-  background: var(--ink);
+  background: var(--azito-indigo);
 }
 .logo {
   display: flex;
   align-items: center;
   width: var(--logo-w);
   min-height: 48px;
-  margin: var(--logo-clear) var(--logo-clear) var(--logo-clear) 0; /* zone d'exclusion de la charte */
+  /* zone d'exclusion de la charte ; à gauche, la marge d'écran compte déjà */
+  margin: var(--logo-clear) var(--logo-clear) var(--logo-clear) max(0px, var(--logo-clear) - var(--gutter));
   flex: none;
 }
 .logo img { width: 100%; height: auto; pointer-events: none; }
@@ -110,7 +111,7 @@ input { user-select: text; -webkit-user-select: text; font: inherit; caret-color
 
 @media (hover: hover) {
   .btn:hover { background: var(--azito-white); color: var(--azito-indigo); }
-  .btn--onDark:hover { background: var(--mist); }
+  .btn--onDark:hover { background: var(--azito-gray-2); }
   .btn--ghostOnDark:hover { background: var(--azito-white); color: var(--azito-indigo); }
   .iconbtn:hover { background: rgb(255 255 255 / 0.14); border-color: var(--azito-white); }
   .pick:hover, .option:not([disabled]):hover { border-color: var(--azito-blue); }
@@ -118,23 +119,31 @@ input { user-select: text; -webkit-user-select: text; font: inherit; caret-color
 }
 
 /* ---------- Accueil : un seul écran ---------- */
-.home { background: var(--photo-veil), url(../img/fond-azito.jpg) center / cover var(--ink); }
+/* Les tailles suivent aussi la hauteur : même rendu sur la borne 1920 × 1080, tout rétrécit dans une fenêtre moins haute. */
+.home {
+  --fs-sm: clamp(1rem, min(0.66rem + 0.74vw, 2.3vh), 1.55rem);
+  --fs-md: clamp(1.1rem, min(0.68rem + 0.96vw, 2.74vh), 1.85rem);
+  --fs-lg: clamp(1.6rem, min(0.8rem + 2.1vw, 4.9vh), 3.3rem);
+  --fs-xl: clamp(2.4rem, min(0.9rem + 4.4vw, 8.9vh), 6rem);
+  --gap: clamp(12px, min(1.6vw, 2.9vh), 32px);
+  background: var(--photo-veil), url(../img/fond-azito.jpg) center / cover var(--azito-indigo);
+}
 .lobby {
   display: grid;
-  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, 0.82fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.8fr);
   grid-template-rows: auto minmax(0, 1fr);
-  grid-template-areas: "head head board" "match build board";
+  grid-template-areas: "head head head" "match build board";
   gap: var(--gap);
-  padding: var(--gap) var(--gutter) var(--gutter);
+  padding: var(--gap) var(--gutter);
 }
-.lobby__head { grid-area: head; display: grid; gap: 0.5em; align-content: end; padding-block: clamp(4px, 1vw, 20px); }
+.lobby__head { grid-area: head; display: grid; gap: 0.4em; padding-block: clamp(4px, 1vh, 16px); }
 .lobby__head h1 { font-size: var(--fs-xl); }
-.lobby__head p { color: var(--text-muted); max-width: 46ch; }
+.lobby__head p { color: var(--text-muted); max-width: 90ch; }
 
 .entry {
   position: relative;
   display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
+  grid-template-rows: minmax(min(18vh, 200px), 1fr) auto;
   min-height: 0;
   color: inherit;
   text-decoration: none;
@@ -152,7 +161,7 @@ input { user-select: text; -webkit-user-select: text; font: inherit; caret-color
 .entry__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .entry__body { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 0.4em var(--gap); padding: var(--gap); }
 .entry__body h2 { font-size: var(--fs-lg); grid-column: 1 / -1; }
-.entry__body p { color: var(--text-muted); font-size: var(--fs-sm); max-width: 34ch; }
+.entry__body p { color: var(--text-muted); font-size: var(--fs-sm); max-width: 44ch; text-wrap: balance; }
 .entry__body .btn { margin-right: 10px; }
 
 .lobby__board {
@@ -164,7 +173,8 @@ input { user-select: text; -webkit-user-select: text; font: inherit; caret-color
   border: 2px solid var(--line);
 }
 .lobby__board h2 { font-size: var(--fs-lg); }
-.lobby__board p { color: var(--text-muted); font-size: var(--fs-sm); margin-top: auto; }
+.lobby__board p { color: var(--text-muted); font-size: var(--fs-sm); margin-top: auto; text-wrap: balance; }
+#board { flex: 1; min-height: 0; overflow: hidden; }
 
 .board { list-style: none; margin: 0; padding: 0; border-top: 4px solid var(--azito-red); }
 .board li {
@@ -181,7 +191,7 @@ input { user-select: text; -webkit-user-select: text; font: inherit; caret-color
 
 /* ---------- Écrans de jeu ---------- */
 .gamepage, .home { height: 100dvh; display: grid; grid-template-rows: auto minmax(0, 1fr); overflow: hidden; }
-.gamepage .topbar { --logo-w: clamp(120px, 11vw, 220px); }
+.gamepage .topbar { --logo-w: clamp(132px, 11vw, 220px); }
 
 /* Chrono : chiffres géants + anneau qui se vide */
 .timer {
@@ -207,7 +217,7 @@ input { user-select: text; -webkit-user-select: text; font: inherit; caret-color
 .picker {
   padding: var(--gap) var(--gutter) var(--gutter); overflow: auto;
   display: flex; flex-direction: column; justify-content: center; gap: var(--gap);
-  background: var(--photo-veil), url(../img/fond-azito.jpg) center / cover var(--ink);
+  background: var(--photo-veil), url(../img/fond-azito.jpg) center / cover var(--azito-indigo);
 }
 .picker h1 { font-size: var(--fs-xl); }
 .picker__note { color: var(--text-muted); max-width: 60ch; }
@@ -216,7 +226,7 @@ input { user-select: text; -webkit-user-select: text; font: inherit; caret-color
 .picker__grid.picker__grid--5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
 .pick {
   position: relative; display: grid; grid-template-rows: auto auto;
-  padding: 0; border: 3px solid var(--azito-white); background: var(--ink);
+  padding: 0; border: 3px solid var(--azito-white); background: var(--azito-indigo);
   cursor: pointer; overflow: hidden; font: inherit; color: inherit; text-align: left;
   transition: border-color 0.18s var(--ease), transform 0.18s var(--ease);
 }
@@ -242,7 +252,7 @@ input { user-select: text; -webkit-user-select: text; font: inherit; caret-color
 .match__bar {
   display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.4em var(--gap);
   padding: 0.55em var(--gutter);
-  background: var(--ink);
+  background: var(--azito-indigo);
   border-block: 1px solid var(--line);
 }
 .match__bar b { font-family: var(--font-display); font-weight: var(--fw-display); font-size: var(--fs-lg); line-height: 1; text-transform: uppercase; }
@@ -282,7 +292,7 @@ input { user-select: text; -webkit-user-select: text; font: inherit; caret-color
 
 /* Build Azito */
 .build { position: relative; min-height: 0; display: grid; grid-template-rows: auto minmax(0, 1fr); }
-.build__bar { display: flex; align-items: center; gap: var(--gap); padding: 0.5em var(--gutter); background: var(--ink); border-bottom: 1px solid var(--line); }
+.build__bar { display: flex; align-items: center; gap: var(--gap); padding: 0.5em var(--gutter); background: var(--azito-indigo); border-bottom: 1px solid var(--line); }
 .build__bar .btn { margin-left: 10px; }
 .build__count { font-family: var(--font-display); font-weight: var(--fw-display); font-size: var(--fs-lg); line-height: 1; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .build__count small { font-family: var(--font); font-weight: var(--fw-regular); font-size: var(--fs-sm); color: var(--text-muted); }
@@ -296,7 +306,7 @@ input { user-select: text; -webkit-user-select: text; font: inherit; caret-color
   position: fixed; inset: 0; z-index: 50;
   display: grid; place-items: center;
   padding: var(--gutter);
-  background: var(--photo-veil), url(../img/fond-azito.jpg) center / cover var(--ink);
+  background: var(--photo-veil), url(../img/fond-azito.jpg) center / cover var(--azito-indigo);
 }
 .panel { width: min(100%, 60rem); max-height: 100%; overflow: auto; display: flex; flex-direction: column; gap: var(--gap); padding: 6px; scrollbar-width: thin; }
 .panel h2 { font-size: var(--fs-lg); }
@@ -310,7 +320,7 @@ input { user-select: text; -webkit-user-select: text; font: inherit; caret-color
   border: 2px solid var(--azito-white); border-radius: 0; background: transparent;
   color: var(--azito-white); font-weight: var(--fw-bold); font-size: var(--fs-md);
 }
-.nameform input::placeholder { color: var(--mist); font-weight: var(--fw-regular); opacity: 1; }
+.nameform input::placeholder { color: var(--azito-gray-2); font-weight: var(--fw-regular); opacity: 1; }
 
 .notice { padding: var(--gutter); display: grid; gap: var(--gap); align-content: center; justify-items: start; }
 .notice p { color: var(--text-muted); }
@@ -330,6 +340,7 @@ input { user-select: text; -webkit-user-select: text; font: inherit; caret-color
 @media (max-width: 1100px), (max-height: 620px) {
   .home { height: auto; min-height: 100dvh; overflow: visible; background-attachment: fixed; }
   .lobby { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: auto; grid-template-areas: "head head" "match build" "board board"; }
+  #board { overflow: visible; }
   .entry__media { min-height: clamp(170px, 34vw, 360px); }
   .picker__grid.picker__grid--5 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .picker { justify-content: flex-start; }
@@ -353,13 +364,12 @@ input { user-select: text; -webkit-user-select: text; font: inherit; caret-color
 }
 /* Téléphone en paysage : on rend la hauteur à la turbine */
 @media (max-height: 480px) and (orientation: landscape) {
-  .gamepage .topbar { --logo-w: 110px; --logo-clear: 8px; }
+  .gamepage .topbar { --logo-w: 132px; }
   .gamepage { --fs-clock: 1.9rem; --fs-lg: 1.3rem; --gap: 8px; }
   .match__bar { padding-block: 0.25em; }
   .match__bar p.match__tip { display: none; }
   .picker__grid, .picker__grid.picker__grid--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .picker__grid.picker__grid--5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
-.picker__grid.picker__grid--5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
   .picker h1 { font-size: var(--fs-lg); }
 }
 

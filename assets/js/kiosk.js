@@ -17,7 +17,7 @@ if (!isHome) {
     toast = document.createElement('p');
     toast.className = 'idle';
     toast.setAttribute('role', 'status');
-    const say = () => { toast.textContent = `Toujours là ? Touche l’écran pour continuer. Retour à l’accueil dans ${left} s.`; };
+    const say = () => { toast.textContent = `Tu es toujours là ? Touche l’écran pour continuer. Retour à l’accueil dans ${left} s.`; };
     say();
     document.body.append(toast);
     tick = setInterval(() => {

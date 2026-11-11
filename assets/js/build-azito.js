@@ -1,11 +1,11 @@
-// Build Azito — puzzle chronométré (Canvas 2D), pièces à tenons « aimantées ».
+// Build Azito : puzzle chronométré (Canvas 2D), pièces à tenons « aimantées ».
 import { addScore, renderBoard, formatTime } from './scores.js';
 import { makeTimer } from './timer.js';
 
 const MAX_TIME = 60;
 const ROWS = 2;
 const SNAP_MS = 480; // durée du flash quand une pièce s'aimante
-const C = { indigo: '#313280', ink: '#1b1c55', red: '#c20e1a', blue: '#4d85d0', gray2: '#d9d9d9', gray5: '#b1b1b0', white: '#ffffff' };
+const C = { indigo: '#313280', red: '#c20e1a', blue: '#4d85d0', gray2: '#d9d9d9', gray5: '#b1b1b0', white: '#ffffff' };
 
 // Images du dossier images/centrale (versions optimisées dans assets/img).
 const PUZZLES = [
@@ -280,12 +280,12 @@ function end(won) {
     els.rTitle.innerHTML = 'Centrale reconstituée <em>en</em>';
     els.rTime.hidden = false;
     els.rTime.textContent = formatTime(elapsed);
-    els.rText.innerHTML = '<strong>Montre cet écran à l’animateur pour récupérer ton goodie.</strong> Inscris ton pseudo pour entrer au classement du jour.';
+    els.rText.innerHTML = '<strong>Montre cet écran à l’animateur pour récupérer ton cadeau.</strong> Tu peux aussi laisser ton prénom pour figurer au classement du jour.';
   } else {
-    els.rTitle.innerHTML = 'Temps écoulé. <em>60 secondes, c’est court</em>';
+    els.rTitle.innerHTML = 'C’est fini, <em>le temps est écoulé</em>';
     els.rTime.hidden = true;
     const done = state.pieces.filter((p) => p.locked).length;
-    els.rText.textContent = `${done} pièce${done > 1 ? 's' : ''} sur ${state.pieces.length} en place. Retente ta chance, tu connais l’image maintenant.`;
+    els.rText.textContent = `${done} pièce${done > 1 ? 's' : ''} sur ${state.pieces.length} en place. Réessaie, maintenant tu connais l’image.`;
   }
   setTimeout(() => { els.result.hidden = false; }, won ? 700 : 200);
 }

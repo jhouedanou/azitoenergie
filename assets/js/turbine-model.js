@@ -1,4 +1,4 @@
-// Turbines à gaz procédurales — recréations three.js des 4 visuels du dossier images/turbine
+// Turbines à gaz procédurales : recréations three.js des 4 visuels du dossier images/turbine
 // (rotor nu, écorché 3/4, maquette en coupe, coupe longitudinale), aux couleurs de la charte Azito Energie.
 // buildTurbine(config, style) → THREE.Group. `config` porte la variante et tout ce qui peut varier d'un schéma à l'autre.
 import * as THREE from 'three';
@@ -31,8 +31,8 @@ export const BASE_CONFIG = {
   supportX: null,       // position du support avant (null = valeur par défaut de la variante)
   bell: true,           // pavillon d'admission
   burners: null,        // nombre de brûleurs (null = tous)
-  burnerTilt: 1,        // 1 | -1 — inclinaison des brûleurs
-  pipeDir: 1,           // 1 | -1 — sens de la conduite de prélèvement
+  burnerTilt: 1,        // 1 | -1 : inclinaison des brûleurs
+  pipeDir: 1,           // 1 | -1 : sens de la conduite de prélèvement
   portX: 1.75,          // position du piquage sur le carter turbine
   flangeSkip: null,     // index d'une bride de carter absente
 };

@@ -1,4 +1,4 @@
-// Turbine Match — observer une turbine, trouver le seul schéma identique parmi A / B / C.
+// Turbine Match : observer une turbine, trouver le seul schéma identique parmi A / B / C.
 // Le visiteur choisit l'une des 4 turbines (recréations three.js des visuels du dossier images/turbine).
 // Le niveau est un réglage d'animateur : ?serie=1|2|3, sinon il alterne chaque jour.
 import { mountViewer, renderSchemas, webglAvailable, VARIANTS } from './turbine-model.js';
@@ -11,18 +11,18 @@ const LEVELS = ['Niveau 1', 'Niveau 2', 'Niveau 3'];
 
 // Chaque mutation = une seule différence avec la turbine observée.
 const M = {
-  // Niveau 1 — différences franches
+  // Niveau 1 : différences franches
   turbine3: { cfg: { turbineStages: 3 }, part: 'turbine', text: 'il manque deux étages d’aubes à la turbine' },
   compHalf: { cfg: { compSkip: [8, 9, 10, 11, 12, 13] }, part: 'compressor', text: 'le compresseur a perdu toute une série d’étages' },
   noBell: { cfg: { bell: false }, part: 'inlet', text: 'le pavillon d’admission d’air a disparu' },
   supportFar: { cfg: { supportX: -0.9 }, part: 'support', text: 'le support avant a été déplacé vers le centre de la machine' },
   fewBurners: { cfg: { burners: 1 }, part: 'burners', text: 'il ne reste qu’un seul brûleur sur la chambre de combustion' },
-  // Niveau 2 — orientations
+  // Niveau 2 : orientations
   turbineFlip: { cfg: { turbineFlip: true }, part: 'turbine', text: 'les étages de la turbine sont montés à l’envers, du plus grand au plus petit' },
   couplingRight: { cfg: { coupling: 'right' }, part: 'coupling', text: 'la bride d’accouplement est passée à l’autre bout de l’arbre' },
   burnerTilt: { cfg: { burnerTilt: -1 }, part: 'burners', text: 'les brûleurs sont inclinés dans l’autre sens' },
   pipeDir: { cfg: { pipeDir: -1 }, part: 'pipe', text: 'la conduite de prélèvement part dans l’autre sens' },
-  // Niveau 3 — détails
+  // Niveau 3 : détails
   turbine4: { cfg: { turbineStages: 4 }, part: 'turbine', text: 'il manque un étage d’aubes à la turbine' },
   compGap: { cfg: { compSkip: [6] }, part: 'compressor', text: 'il manque un étage au milieu du compresseur' },
   shortStub: { cfg: { stub: 0.55 }, part: 'stub', text: 'le bout d’arbre côté compresseur est plus court' },
@@ -105,7 +105,7 @@ function loop() {
   if (phase === 'observe') {
     const left = Math.ceil(remaining - (DURATION - OBSERVE));
     if (left <= 0) recall();
-    else els.pTip.textContent = `Fais-la pivoter du doigt. Elle disparaît dans ${left} s.`;
+    else els.pTip.textContent = `Tu peux la faire tourner avec ton doigt. Elle disparaît dans ${left} s.`;
   }
   raf = requestAnimationFrame(loop);
 }
@@ -139,7 +139,7 @@ function recall() {
   if (phase !== 'observe') return;
   setPhase('recall');
   els.pTitle.textContent = 'Quel schéma est identique ?';
-  els.pTip.textContent = 'De mémoire : un seul schéma est exact.';
+  els.pTip.textContent = 'Un seul des trois est le bon.';
   els.ready.hidden = true;
   els.options.forEach((btn) => { btn.disabled = false; });
 }
@@ -165,7 +165,7 @@ function start() {
   showBar(false);
   setPhase('observe');
   els.pTitle.textContent = 'Mémorise la turbine';
-  els.pTip.textContent = `Fais-la pivoter du doigt. Elle disparaît dans ${OBSERVE} s.`;
+  els.pTip.textContent = `Tu peux la faire tourner avec ton doigt. Elle disparaît dans ${OBSERVE} s.`;
   els.ready.hidden = false;
   newRound();
   playing = true;
@@ -197,7 +197,7 @@ function finish(choice) {
 
   if (won) {
     els.vTitle.textContent = `Bien vu ! C’est le schéma ${LETTERS[answer]}`;
-    els.vText.innerHTML = '<strong>Montre cet écran à l’animateur pour récupérer ton goodie.</strong>';
+    els.vText.innerHTML = '<strong>Montre cet écran à l’animateur pour récupérer ton cadeau.</strong>';
   } else {
     els.vTitle.textContent = choice < 0
       ? `Temps écoulé. C’était le schéma ${LETTERS[answer]}`

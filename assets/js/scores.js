@@ -122,7 +122,7 @@ function paint(container, list, highlightId) {
   if (!list.length) {
     const p = document.createElement('p');
     p.className = 'board__empty';
-    p.textContent = 'Aucun temps enregistré aujourd’hui. À toi d’ouvrir le classement.';
+    p.textContent = 'Personne n’a encore joué aujourd’hui. Sois le premier au classement.';
     container.append(p);
     return;
   }
