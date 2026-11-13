@@ -6,7 +6,7 @@ POSTE REQUIS
   Aucune installation, aucune connexion Internet.
 
 MISE EN ROUTE
-  1. Copier « Azito-Defis-1.1.0.exe » sur le poste, par exemple sur le Bureau.
+  1. Copier « Azito-Defis-1.2.0.exe » sur le poste, par exemple sur le Bureau.
   2. Double-cliquer dessus. Le premier lancement prend quelques secondes.
   3. Si Windows affiche « Windows a protégé votre ordinateur » :
      cliquer sur « Informations complémentaires », puis « Exécuter quand même ».
@@ -17,7 +17,8 @@ PENDANT LE SALON
   Quitter l'application : Ctrl + Maj + Q (clavier branché sur la borne).
     Les autres raccourcis (Alt+F4, F11, etc.) sont désactivés pour que les visiteurs
     ne puissent pas sortir du jeu.
-  Remettre le classement à zéro : appui long de 3 secondes sur le logo Azito Energie.
+  Menu de l'animateur : appui long de 3 secondes sur le logo Azito Energie.
+    Il propose « Exporter les inscriptions (CSV) » et « Remettre à zéro le classement ».
   Sans activité pendant une minute, le jeu en cours revient tout seul à l'accueil.
   L'écran ne se met pas en veille tant que l'application est ouverte.
 
@@ -25,6 +26,15 @@ CLASSEMENT
   Les meilleurs temps de « Build Azito » sont enregistrés sur la borne et conservés
   d'un lancement à l'autre. Le classement affiché est celui du jour.
   Cette version n'échange rien avec la version en ligne : chaque borne a son propre classement.
+
+INSCRIPTIONS
+  Avant de jouer, chaque visiteur donne son nom, son prénom, son adresse e-mail et son profil,
+  avec le clavier affiché à l'écran. Ces inscriptions sont enregistrées sur la borne.
+  Pour les récupérer : menu de l'animateur > « Exporter les inscriptions (CSV) ».
+  Le fichier « azito-inscriptions-AAAA-MM-JJ-HHMMSS.csv » est créé sur le Bureau de Windows ;
+  il s'ouvre dans Excel. Chaque export contient toutes les inscriptions depuis la première.
+  Pensez à exporter à la fin de chaque journée et à copier le fichier sur une clé USB.
+  Ces données sont personnelles : ne laissez pas le fichier sur un poste partagé.
 
 LANCEMENT AUTOMATIQUE AU DÉMARRAGE (facultatif)
   1. Clic droit sur le fichier .exe > « Créer un raccourci ».

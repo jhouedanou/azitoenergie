@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Inscription, Azito Energie</title>
+  <meta name="theme-color" content="#313280">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600&family=Barlow+Condensed:wght@500;700&display=swap">
+  <link rel="stylesheet" href="assets/css/tokens.css">
+  <link rel="stylesheet" href="assets/css/app.css">
+</head>
+<body class="gamepage regpage" data-page="inscription">
+  <header class="topbar">
+    <a class="logo" href="index.html" aria-label="Retour à l’accueil Azito Energie">
+      <img src="assets/logo/azito-energie-blanc.png" alt="Azito Energie" width="1342" height="305">
+    </a>
+    <p class="topbar__title">Inscription</p>
+    <div class="topbar__actions">
+      <button class="iconbtn" type="button" data-fullscreen aria-label="Plein écran">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="reg">
+    <form class="regform" id="regform" autocomplete="off" novalidate>
+      <h1>Avant de jouer, <em>présente-toi</em></h1>
+
+      <div class="regform__fields">
+        <label class="field">
+          <span>Nom</span>
+          <input id="nom" name="nom" type="text" maxlength="40" data-cap="on" autocapitalize="words" spellcheck="false" enterkeyhint="next" aria-describedby="err-nom">
+          <small class="field__error" id="err-nom" role="alert" hidden></small>
+        </label>
+        <label class="field">
+          <span>Prénom</span>
+          <input id="prenom" name="prenom" type="text" maxlength="40" data-cap="on" autocapitalize="words" spellcheck="false" enterkeyhint="next" aria-describedby="err-prenom">
+          <small class="field__error" id="err-prenom" role="alert" hidden></small>
+        </label>
+        <label class="field field--wide">
+          <span>Adresse e-mail</span>
+          <!-- type="text" : le curseur reste pilotable par le clavier tactile ; le format est contrôlé à l'envoi -->
+          <input id="email" name="email" type="text" maxlength="120" data-space="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" aria-describedby="err-email">
+          <small class="field__error" id="err-email" role="alert" hidden></small>
+        </label>
+      </div>
+
+      <div class="regform__end">
+        <div class="field" role="group" aria-labelledby="profil-label" aria-describedby="err-profil">
+          <span id="profil-label">Ton profil</span>
+          <div class="chips" id="profils"></div>
+          <small class="field__error" id="err-profil" role="alert" hidden></small>
+        </div>
+        <button class="btn" type="submit"><span>Jouer</span></button>
+      </div>
+
+      <div class="kbd" id="kbd" aria-hidden="true"></div>
+
+      <p class="regform__note">Azito Energie utilise ces informations pour garder le contact avec les visiteurs du stand.</p>
+    </form>
+  </main>
+
+  <script type="module" src="assets/js/kiosk.js"></script>
+  <script type="module">
+    import { PROFILS, GAMES, validate, addRegistration, syncRegistrations } from './assets/js/inscriptions.js';
+    import { mountKeyboard } from './assets/js/clavier.js';
+
+    const $ = (id) => document.getElementById(id);
+    const form = $('regform');
+    const fields = [$('nom'), $('prenom'), $('email')];
+    let profil = '';
+
+    // Destination après l'inscription : uniquement un des deux jeux, sinon l'accueil.
+    const asked = new URLSearchParams(location.search).get('vers');
+    const next = GAMES.includes(asked) ? asked : 'index.html';
+
+    const showErrors = (errors) => {
+      for (const name of ['nom', 'prenom', 'email', 'profil']) {
+        const el = $(`err-${name}`);
+        el.textContent = errors[name] || '';
+        el.hidden = !errors[name];
+      }
+    };
+
+    for (const label of PROFILS) {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'chip';
+      b.textContent = label;
+      b.setAttribute('aria-pressed', 'false');
+      b.addEventListener('click', () => {
+        profil = label;
+        $('profils').querySelectorAll('.chip').forEach((c) => c.setAttribute('aria-pressed', String(c === b)));
+        $('err-profil').hidden = true;
+      });
+      $('profils').append(b);
+    }
+
+    fields.forEach((f) => f.addEventListener('input', () => { $(`err-${f.name}`).hidden = true; }));
+
+    let sending = false;
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (sending) return; // un seul enregistrement, même si « Jouer » est touché deux fois
+      const data = { nom: fields[0].value, prenom: fields[1].value, email: fields[2].value, profil };
+      const errors = validate(data);
+      showErrors(errors);
+      const first = fields.find((f) => errors[f.name]);
+      if (first) first.focus();
+      if (Object.keys(errors).length) return;
+      sending = true;
+      addRegistration(data);
+      // On laisse 1,5 s à l'envoi ; s'il n'a pas abouti (réseau lent, hors connexion), il repart à la page suivante.
+      await Promise.race([syncRegistrations(), new Promise((r) => setTimeout(r, 1500))]);
+      location.replace(next);
+    });
+
+    // Clavier tactile sur la borne et les grands écrans ; sur téléphone, le clavier du système suffit.
+    if (matchMedia('(min-width: 1000px) and (min-height: 700px)').matches) {
+      mountKeyboard($('kbd'), fields, { onDone: () => form.requestSubmit() });
+      fields[0].focus();
+    } else {
+      $('kbd').hidden = true;
+    }
+  </script>
+</body>
+</html>

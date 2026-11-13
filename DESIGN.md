@@ -166,12 +166,17 @@ Angles droits partout (rayon 0). La seule forme propre au système est l'oblique
 ### Inputs / Fields
 - **Style:** contour blanc de 2 px, fond transparent, texte blanc 600, hauteur `tap`.
 - **Focus:** anneau blanc commun.
+- **Erreur:** message blanc sur aplat rouge sous le champ ; le contour du champ reste blanc.
+- **Choix (`chip`) :** contour blanc ; le choix retenu passe en blanc plein, texte indigo.
+
+### Inscription
+Un écran avant les jeux : nom, prénom, e-mail, profil, bouton rouge « Jouer ». Sur la borne, un clavier tactile AZERTY est affiché sous le formulaire (panneau encre, touches à angles droits) ; sur téléphone, le clavier du système le remplace.
 
 ### Navigation
 - En-tête encre : logo blanc à gauche (jamais sous 132 px de large, soit les 35 mm de la charte ; zone d'exclusion respectée sur les quatre côtés ; zone tactile ≥ 48 px), nom du jeu au centre, chrono et plein écran à droite.
 
 ### Chrono
-Anneau qui se vide + secondes en chiffres tabulaires. Sous 10 secondes, tout le bloc passe sur aplat rouge.
+Anneau qui se vide + secondes en chiffres tabulaires. Sur les dernières secondes (10 pour Turbine Match, 5 pour Build Azito qui n'en dure que 20), tout le bloc passe sur aplat rouge.
 
 ### Barre de verdict
 Elle remplace la consigne entre la turbine et les schémas : le résultat s'affiche sans rien masquer, avec Rejouer, Voir la différence, Autre turbine, Accueil.

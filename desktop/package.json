@@ -1,7 +1,7 @@
 {
   "name": "azito-defis",
   "productName": "Azito Defis",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Les défis du stand Azito Energie, version Windows pour la borne",
   "author": "Azito Energie",
   "private": true,

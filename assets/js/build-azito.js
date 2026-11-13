@@ -1,8 +1,10 @@
 // Build Azito : puzzle chronométré (Canvas 2D), pièces à tenons « aimantées ».
 import { addScore, renderBoard, formatTime } from './scores.js';
 import { makeTimer } from './timer.js';
+import { getPlayer } from './inscriptions.js';
 
-const MAX_TIME = 60;
+const MAX_TIME = 20; // secondes pour finir le puzzle ; au-delà, la partie est perdue
+const LOW_TIME = 5; // le chrono passe au rouge sur les 5 dernières secondes
 const ROWS = 2;
 const SNAP_MS = 480; // durée du flash quand une pièce s'aimante
 const C = { indigo: '#313280', red: '#c20e1a', blue: '#4d85d0', gray2: '#d9d9d9', gray5: '#b1b1b0', white: '#ffffff' };
@@ -22,11 +24,11 @@ const els = {
   build: $('build'), wrap: $('canvas-wrap'), canvas: $('canvas'), back: $('back'),
   progress: $('progress'), count: $('count'),
   result: $('result'), rTitle: $('result-title'), rTime: $('result-time'),
-  rText: $('result-text'), form: $('nameform'), name: $('name'), rBoard: $('result-board'),
+  rText: $('result-text'), rBoard: $('result-board'),
   again: $('again'), other: $('other'),
 };
 const ctx = els.canvas.getContext('2d');
-const setTimer = makeTimer({ root: $('timer'), text: $('timer-text'), bar: $('timer-bar') }, MAX_TIME);
+const setTimer = makeTimer({ root: $('timer'), text: $('timer-text'), bar: $('timer-bar') }, MAX_TIME, LOW_TIME);
 
 const cols = 4;     // 4 × 2 = 8 pièces
 let current = null;   // puzzle choisi
@@ -274,29 +276,23 @@ function end(won) {
   updateHud();
   settle();
   els.rBoard.replaceChildren();
-  els.form.hidden = !won;
-  els.name.value = '';
+  els.result.classList.toggle('is-lost', !won);
   if (won) {
     els.rTitle.innerHTML = 'Centrale reconstituée <em>en</em>';
     els.rTime.hidden = false;
     els.rTime.textContent = formatTime(elapsed);
-    els.rText.innerHTML = '<strong>Montre cet écran à l’animateur pour récupérer ton cadeau.</strong> Tu peux aussi laisser ton prénom pour figurer au classement du jour.';
+    els.rText.innerHTML = '<strong>Montre cet écran à l’animateur pour récupérer ton cadeau.</strong> Ton temps est inscrit au classement du jour.';
+    // Le prénom vient de l'inscription : le temps entre au classement sans nouvelle saisie.
+    const entry = addScore(getPlayer()?.prenom, elapsed, current.id);
+    renderBoard(els.rBoard, { limit: 5, highlightId: entry.id });
   } else {
-    els.rTitle.innerHTML = 'C’est fini, <em>le temps est écoulé</em>';
+    els.rTitle.innerHTML = 'Perdu ! <em>Le temps est écoulé</em>';
     els.rTime.hidden = true;
     const done = state.pieces.filter((p) => p.locked).length;
-    els.rText.textContent = `${done} pièce${done > 1 ? 's' : ''} sur ${state.pieces.length} en place. Réessaie, maintenant tu connais l’image.`;
+    els.rText.textContent = `${done} pièce${done > 1 ? 's' : ''} sur ${state.pieces.length} en place en ${MAX_TIME} secondes. Réessaie, maintenant tu connais l’image.`;
   }
   setTimeout(() => { els.result.hidden = false; }, won ? 700 : 200);
 }
-
-els.form.addEventListener('submit', (e) => {
-  e.preventDefault();
-  const entry = addScore(els.name.value, elapsed, current.id);
-  els.form.hidden = true;
-  els.name.blur();
-  renderBoard(els.rBoard, { limit: 5, highlightId: entry.id });
-});
 
 // ---------- Glisser-déposer ----------
 function pointerPos(e) {
