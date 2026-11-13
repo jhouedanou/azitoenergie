@@ -1,0 +1,47 @@
+# Construit l'application Windows de la borne et la publie dans une release GitHub.
+# Lancement manuel : onglet Actions > « Release borne Windows » > Run workflow.
+# La version vient de desktop/package.json : la release s'appelle v<version>.
+name: Release borne Windows
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write # créer la release et y déposer le .exe
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: desktop
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: desktop/package-lock.json
+
+      - name: Installer les dépendances
+        run: npm ci
+
+      - name: Construire le .exe
+        run: npm run build:win -- --publish never
+
+      - name: Publier la release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version=$(node -p "require('./package.json').version")
+          exe="dist/Azito-Defis-${version}.exe"
+          test -f "$exe"
+          if gh release view "v${version}" >/dev/null 2>&1; then
+            gh release upload "v${version}" "$exe" LISEZMOI.txt --clobber
+          else
+            gh release create "v${version}" "$exe" LISEZMOI.txt \
+              --target "$GITHUB_SHA" \
+              --title "Borne Windows ${version}" \
+              --notes "Version ${version} de la borne Windows (fonctionne sans Internet). Mise en route : voir LISEZMOI.txt."
+          fi
