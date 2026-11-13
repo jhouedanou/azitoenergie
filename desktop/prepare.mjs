@@ -10,7 +10,7 @@ const root = path.join(here, '..');
 const web = path.join(here, 'web');
 const require = createRequire(import.meta.url);
 
-const PAGES = ['index.html', 'turbine-match.html', 'build-azito.html'];
+const PAGES = ['index.html', 'inscription.html', 'turbine-match.html', 'build-azito.html'];
 const FONTS = [
   { pkg: '@fontsource/barlow', family: 'Barlow', weights: [400, 600] },
   { pkg: '@fontsource/barlow-condensed', family: 'Barlow Condensed', weights: [500, 700] },
@@ -20,10 +20,10 @@ await rm(web, { recursive: true, force: true });
 await mkdir(path.join(web, 'assets', 'fonts'), { recursive: true });
 await cp(path.join(root, 'assets'), path.join(web, 'assets'), { recursive: true });
 
-// Sur la borne, le classement reste local : sans clé, scores.js n'appelle jamais le serveur.
+// Sur la borne, classement et inscriptions restent locaux : sans clé, aucun script n'appelle le serveur.
 await writeFile(
   path.join(web, 'assets', 'js', 'config.js'),
-  "// Version borne : le classement est enregistré sur ce poste uniquement.\nexport const SUPABASE_URL = '';\nexport const SUPABASE_KEY = '';\n",
+  "// Version borne : classement et inscriptions sont enregistrés sur ce poste uniquement.\nexport const SUPABASE_URL = '';\nexport const SUPABASE_KEY = '';\n",
 );
 
 let css = '';
@@ -51,8 +51,8 @@ for (const page of PAGES) {
   if (html.includes('fonts.googleapis.com')) throw new Error(`Google Fonts encore présent dans ${page}`);
   await writeFile(path.join(web, page), html);
 }
-for (const file of ['config.js', 'scores.js']) {
+for (const file of ['config.js', 'scores.js', 'inscriptions.js']) {
   const js = await readFile(path.join(web, 'assets', 'js', file), 'utf8');
-  if (js.includes('supabase.co')) throw new Error(`Adresse du classement en ligne encore présente dans ${file}`);
+  if (js.includes('supabase.co')) throw new Error(`Adresse de la base en ligne encore présente dans ${file}`);
 }
 console.log('Site copié dans desktop/web');

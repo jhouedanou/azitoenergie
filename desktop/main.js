@@ -131,6 +131,13 @@ app.whenReady().then(() => {
     sorties.push(details.url);
     callback({ cancel: true });
   });
+  // Export des inscriptions (menu de l'animateur) : le fichier CSV va sur le Bureau, sans boîte de dialogue.
+  session.defaultSession.on('will-download', (event, item) => {
+    const name = path.basename(item.getFilename());
+    if (!/^azito-inscriptions-\d{4}-\d{2}-\d{2}\.csv$/.test(name)) { event.preventDefault(); return; }
+    const stamp = new Date().toTimeString().slice(0, 8).replace(/:/g, ''); // un export ne remplace pas le précédent
+    item.setSavePath(path.join(app.getPath('desktop'), name.replace('.csv', `-${stamp}.csv`)));
+  });
   if (!smoke) powerSaveBlocker.start('prevent-display-sleep');
   createWindow();
 });

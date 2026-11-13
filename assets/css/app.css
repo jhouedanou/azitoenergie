@@ -115,6 +115,7 @@ input { user-select: text; -webkit-user-select: text; font: inherit; caret-color
   .btn--ghostOnDark:hover { background: var(--azito-white); color: var(--azito-indigo); }
   .iconbtn:hover { background: rgb(255 255 255 / 0.14); border-color: var(--azito-white); }
   .pick:hover, .option:not([disabled]):hover { border-color: var(--azito-blue); }
+  .chip:hover, .kbd__key:hover { border-color: var(--azito-white); }
   .entry:hover .btn { background: var(--azito-white); color: var(--azito-indigo); }
 }
 
@@ -314,13 +315,63 @@ input { user-select: text; -webkit-user-select: text; font: inherit; caret-color
 .panel p strong { color: var(--azito-white); font-weight: var(--fw-bold); }
 .panel__actions { display: flex; flex-wrap: wrap; gap: 18px 26px; padding-left: 10px; }
 .bigtime { font-family: var(--font-display); font-weight: var(--fw-display); font-size: var(--fs-xl); font-variant-numeric: tabular-nums; line-height: 1; color: var(--azito-white); }
-.nameform { display: flex; gap: 12px 24px; flex-wrap: wrap; align-items: stretch; padding-right: 10px; }
-.nameform input {
-  min-height: var(--tap); flex: 1 1 14em; padding: 0 0.8em;
+.overlay.is-lost .panel h2 { font-size: var(--fs-xl); }
+
+/* Joueur en cours (accueil) */
+.player { display: flex; align-items: center; gap: var(--gap); font-weight: var(--fw-bold); font-size: var(--fs-sm); padding-right: 10px; }
+
+/* ---------- Inscription ---------- */
+/* Les tailles suivent aussi la hauteur : le formulaire et le clavier tiennent ensemble sur la borne. */
+.regpage {
+  --gap: clamp(10px, min(1.4vw, 2.2vh), 26px);
+  --tap: clamp(52px, min(4.6vw, 7vh), 80px);
+  --fs-sm: clamp(1rem, min(0.66rem + 0.74vw, 2.3vh), 1.55rem);
+  --fs-md: clamp(1.1rem, min(0.68rem + 0.96vw, 2.74vh), 1.85rem);
+  --fs-xl: clamp(2rem, min(0.9rem + 3.4vw, 6.6vh), 4.6rem);
+}
+.reg {
+  min-height: 0; overflow: auto;
+  display: grid; place-items: center;
+  padding: var(--gap) var(--gutter);
+  background: var(--photo-veil), url(../img/fond-azito.jpg) center / cover var(--azito-indigo);
+}
+.regform { width: min(100%, 86rem); display: grid; gap: var(--gap); }
+.regform h1 { font-size: var(--fs-xl); }
+.regform__fields { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.5fr); gap: var(--gap); align-items: start; }
+.regform__end { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: var(--gap); padding-right: 14px; }
+.regform__note { color: var(--text-muted); font-size: var(--fs-xs); }
+.field { display: grid; gap: 0.3em; min-width: 0; }
+.field > span { font-weight: var(--fw-bold); font-size: var(--fs-sm); }
+.field input {
+  width: 100%; min-height: var(--tap); padding: 0 0.7em;
   border: 2px solid var(--azito-white); border-radius: 0; background: transparent;
   color: var(--azito-white); font-weight: var(--fw-bold); font-size: var(--fs-md);
 }
-.nameform input::placeholder { color: var(--azito-gray-2); font-weight: var(--fw-regular); opacity: 1; }
+.field input:focus { outline: 4px solid var(--azito-white); outline-offset: 4px; background: rgb(255 255 255 / 0.12); }
+.field__error { justify-self: start; padding: 0.15em 0.6em; background: var(--azito-red); color: var(--azito-white); font-weight: var(--fw-bold); font-size: var(--fs-xs); }
+.chips { display: flex; flex-wrap: wrap; gap: 12px; }
+.chip {
+  min-height: var(--tap); padding: 0 1.1em;
+  border: 2px solid var(--azito-white); background: transparent; color: var(--azito-white);
+  font: inherit; font-weight: var(--fw-bold); font-size: var(--fs-sm); cursor: pointer;
+  transition: background-color 0.18s var(--ease), color 0.18s var(--ease);
+}
+.chip[aria-pressed="true"] { background: var(--azito-white); color: var(--azito-indigo); }
+
+/* Clavier tactile */
+.kbd { display: grid; gap: 8px; padding: var(--gap); background: var(--panel); border: 2px solid var(--line); }
+.kbd__row { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 8px; }
+.kbd__key {
+  --span: 1;
+  grid-column: span var(--span);
+  min-height: clamp(44px, min(3.4vw, 6.2vh), 68px); padding: 0;
+  border: 2px solid var(--line); background: var(--azito-indigo); color: var(--azito-white);
+  font: inherit; font-family: var(--font-display); font-weight: var(--fw-display); font-size: var(--fs-md); line-height: 1;
+  cursor: pointer; touch-action: manipulation;
+}
+.kbd__key--wide { font-family: var(--font); font-weight: var(--fw-bold); font-size: var(--fs-sm); }
+.kbd__key:active { background: var(--azito-white); color: var(--azito-indigo); }
+.kbd__key[aria-pressed="true"], .kbd__key--next { background: var(--azito-white); color: var(--azito-indigo); border-color: var(--azito-white); }
 
 .notice { padding: var(--gutter); display: grid; gap: var(--gap); align-content: center; justify-items: start; }
 .notice p { color: var(--text-muted); }
@@ -346,6 +397,10 @@ input { user-select: text; -webkit-user-select: text; font: inherit; caret-color
   .picker { justify-content: flex-start; }
 }
 @media (max-width: 860px) {
+  .regpage { height: auto; min-height: 100dvh; overflow: visible; }
+  .reg { place-items: start stretch; }
+  .regform__fields { grid-template-columns: minmax(0, 1fr); }
+  .player > span { display: none; }
   .topbar__title span { display: none; }
   .picker__grid, .picker__grid.picker__grid--4, .picker__grid.picker__grid--5 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .match__bar p.match__tip { display: none; }

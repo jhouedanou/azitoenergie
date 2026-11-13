@@ -35,7 +35,7 @@ function cutoff() {
   try { return localStorage.getItem(CUTOFF) || ''; } catch { return ''; }
 }
 
-function uuid() {
+export function uuid() {
   if (crypto.randomUUID) return crypto.randomUUID();
   const b = crypto.getRandomValues(new Uint8Array(16));
   b[6] = (b[6] & 0x0f) | 0x40;

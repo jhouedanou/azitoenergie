@@ -23,7 +23,7 @@
           <circle class="track" cx="26" cy="26" r="22"/>
           <circle class="bar" id="timer-bar" cx="26" cy="26" r="22"/>
         </svg>
-        <span id="timer-text">60</span><small>s</small>
+        <span id="timer-text">20</span><small>s</small>
       </div>
       <button class="iconbtn" type="button" data-fullscreen aria-label="Plein écran">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
@@ -34,7 +34,7 @@
   <!-- Choix du puzzle -->
   <main class="picker" id="picker">
     <h1>Choisis l’image <em>à reconstituer</em></h1>
-    <p class="picker__note">Fais glisser les 8 pièces à leur place, elles se fixent toutes seules quand c’est bon. Tu as 60 secondes et le chrono démarre dès que tu touches une image.</p>
+    <p class="picker__note">Fais glisser les 8 pièces à leur place, elles se fixent toutes seules quand c’est bon. Tu as 20 secondes et le chrono démarre dès que tu touches une image.</p>
     <div class="picker__grid picker__grid--5" id="grid"></div>
   </main>
 
@@ -54,10 +54,6 @@
       <h2 id="result-title"></h2>
       <p class="bigtime" id="result-time"></p>
       <p id="result-text"></p>
-      <form class="nameform" id="nameform" autocomplete="off">
-        <input id="name" name="name" type="text" maxlength="14" placeholder="Ton prénom ou pseudo" aria-label="Ton prénom ou pseudo" enterkeyhint="done">
-        <button class="btn" type="submit"><span>Entrer au classement</span></button>
-      </form>
       <div id="result-board"></div>
       <div class="panel__actions">
         <button class="btn btn--onDark" type="button" id="again"><span>Rejouer</span></button>
